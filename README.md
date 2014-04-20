@@ -1,4 +1,10 @@
 el-cms-template
 ===============
 
-Base templates for EL-CMS
+Base theme for EL-CMS
+
+**This theme is under construction**
+
+Dependancies:
+ - CakePHP 2.4.x
+ - superBake

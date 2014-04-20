@@ -1,0 +1,161 @@
+/*------------------------------------------------------------------------------
+
+Import other files from TBS and FontAwesome
+
+/*----------------------------------------------------------------------------*/
+@import "public-bootstrap.less";
+
+/*------------------------------------------------------------------------------
+
+Theme modifications
+
+/*----------------------------------------------------------------------------*/
+// Public line
+#public-line{
+	.line();
+	background-color: @brand-info;
+}
+// User line
+#user-line{
+	.line();
+	background-color: @brand-success;
+}
+
+/*
+ * Plugins containers
+ */
+// Shared styles:
+.container-blog,
+.container-gallery,
+.container-likes,
+.container-links,
+.container-other,
+.container-projects{
+	background-color: @body-bg;
+	padding-top: 15px;
+}
+// Blog content
+.container-blog{
+	border: 3px solid @blogColor;
+	.box-shadow(0px 0px 2px 1px darken(@blogColor, 20%));
+	.toolbar{
+		border-color:@blogColor;
+		.btn-default{
+			border-color:@blogColor;
+			background-color:lighten(@blogColor, 20%);
+		}
+	}
+}
+// Files content
+.container-gallery{
+	border: 3px solid @galleryColor;
+	.box-shadow(0px 0px 2px 1px darken(@galleryColor, 20%));
+	.toolbar{
+		border-color:@galleryColor;
+		.btn-default{
+			border-color:@galleryColor;
+			background-color:lighten(@galleryColor, 20%);
+		}
+	}
+}
+// Likes
+.container-likes{
+	border: 3px solid @likesColor;
+	.box-shadow(0px 0px 2px 1px darken(@likesColor, 20%));
+	.toolbar{
+		border-color:@likesColor;
+		.btn-default{
+			border-color:@likesColor;
+			background-color:lighten(@likesColor, 20%);
+		}
+	}
+}
+// Links
+.container-links{
+	border: 3px solid @linksColor;
+	.box-shadow(0px 0px 2px 1px darken(@linksColor, 20%));
+	.toolbar{
+		border-color:@linksColor;
+		.btn-default{
+			border-color:@linksColor;
+			background-color:lighten(@linksColor, 20%);
+		}
+	}
+}
+// Projects
+.container-projects{
+	border: 3px solid @projectsColor;
+	.box-shadow(0px 0px 2px 1px darken(@projectsColor, 20%));
+	.toolbar{
+		border-color:@projectsColor;
+		.btn-default{
+			border-color:@projectsColor;
+			background-color:lighten(@projectsColor, 20%);
+		}
+	}
+}
+// projects
+.container-other{
+	border: 3px solid @otherColor;
+	.box-shadow(0px 0px 2px 1px darken(@otherColor, 20%));
+	.toolbar{
+		border-color:@otherColor;
+		.btn-default{
+			border-color:@otherColor;
+			background-color:lighten(@otherColor, 20%);
+		}
+	}
+}
+/*
+ * Toolbars
+ */
+.toolbar{
+	padding:3px 35px;
+	margin:5px -30px;
+	.btn-default{
+		background-color: @gray-light;
+	}
+}
+
+/*
+ * Blog style
+ */
+// Blog content page
+.article-list{
+	border: 1px solid lighten(@blogColor, 15%);
+	background-color: lighten(@blogColor, 20%);
+	margin-bottom: 10px;
+	.article-list-header, .article-list-footer{
+		padding:5px;
+	}
+	.article-list-content{
+		border-top: 1px solid lighten(@blogColor, 15%);
+		border-bottom: 1px solid lighten(@blogColor, 15%);
+		padding:5px;
+		background-color: lighten(@blogColor, 23%);
+	}
+}
+
+/*
+ * Login layout
+ */
+
+.login-box{
+	.container-other;
+	padding-bottom: 15px;
+}
+
+.login-footer{
+	height:30px;
+	min-height: 30px;
+	background-color:@gray-lighter;
+	border:1px solid lighten(@gray-light, 15%);
+	border-width: 1px 0px;
+	padding:3px 45px;
+	margin: 0px -30px;
+	/*font-size: 0.9em;*/
+	text-align: center;
+}
+.login-content{
+	margin-bottom:15px;
+}

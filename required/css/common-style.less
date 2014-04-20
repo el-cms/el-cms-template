@@ -1,0 +1,76 @@
+/*------------------------------------------------------------------------------
+
+This Less file is meant to share properties between both public and admin layouts
+
+/*----------------------------------------------------------------------------*/
+
+/*
+ * Vars
+ */
+// Beige
+@blogColor: #D0C6B1;
+// Light orange
+@projectsColor: #EBB035;
+// Light blue
+@galleryColor: #06A2CB;
+// green
+@likesColor: #218559;
+// Purple
+@linksColor: #9006CB;
+// Red
+@adminColor: #DD1E2F;
+// Black
+@otherColor:#000;
+body{
+	padding-top:65px;
+	padding-bottom:35px;
+	background-color: @gray-lighter;
+}
+
+h1.main-title{
+	margin-top:-5px;
+}
+
+#footer{
+	height:22px;
+	min-height: 22px;
+	background-color:@gray-lighter;
+	border-top:1px solid lighten(@gray-light, 15%);
+	border-width: 1px 0px 0px 0px;
+}
+
+.language-selected{
+	.box-shadow(0px 0px 2px 2px @brand-primary);
+}
+
+.nav-avatar{
+	margin:-10px 5px -5px -10px;
+}
+
+/*
+ * Toolbars
+ */
+.toolbar{
+	border-top:1px solid @gray-dark;
+	border-bottom:1px solid @gray-dark;
+	padding:3px 20px;
+	margin:5px -15px;
+	background-color: @gray-lighter;
+	color:@gray-dark;
+	.btn-default{
+		background-color:@gray;
+		border:1px solid @gray-darker;
+		color: @gray-darker;
+	}
+}
+
+/*
+ * Mixins
+ */
+
+// user lines, under the main navbar.
+.line(){
+	min-height:5px;
+	border-bottom: 1px solid @gray-light;
+	.box-shadow(2px 0px 2px 1px @gray-darker);
+}

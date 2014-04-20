@@ -1,0 +1,33 @@
+/*------------------------------------------------------------------------------
+
+Import other files from TBS and FontAwesome
+
+/*----------------------------------------------------------------------------*/
+@import "admin-bootstrap.less";
+
+/*------------------------------------------------------------------------------
+
+Theme modifications
+
+/*----------------------------------------------------------------------------*/
+
+//
+// Layout changes:
+//
+
+#admin-line{
+	.line();
+	background-color: @brand-danger;
+}
+
+#page-content{
+	border:3px solid @gray-dark;
+	background-color: @body-bg;
+	.box-shadow(0px 0px 2px 1px @gray-darker);
+	padding-top: 15px;
+}
+
+.toolbar{
+	background-color: @gray-dark;
+	color: @gray-light;
+}
