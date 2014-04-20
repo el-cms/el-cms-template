@@ -1,15 +1,15 @@
-[submodule "required/js/ckeditor"]
-	path = required/js/ckeditor
-	url = git://github.com/ckeditor/ckeditor-releases.git
-[submodule "required/js/fancybox"]
-	path = required/js/fancybox
-	url = git://github.com/fancyapps/fancyBox.git
-[submodule "required/js/datetime"]
-	path = required/js/datetime
-	url = git://github.com/smalot/bootstrap-datetimepicker.git
 [submodule "required/css/twitter-bootstrap"]
 	path = required/css/twitter-bootstrap
 	url = git://github.com/twbs/bootstrap.git
 [submodule "required/css/font-awesome"]
 	path = required/css/font-awesome
 	url = git://github.com/FortAwesome/Font-Awesome.git
+[submodule "required/js/datetime"]
+	path = required/js/datetime
+	url = git://github.com/smalot/bootstrap-datetimepicker.git
+[submodule "required/js/ckeditor"]
+	path = required/js/ckeditor
+	url = git://github.com/ckeditor/ckeditor-releases.git
+[submodule "required/js/fancybox"]
+	path = required/js/fancybox
+	url = git://github.com/fancyapps/fancyBox.git
