@@ -130,7 +130,9 @@ class <?php echo $controllerName; ?>Controller extends <?php echo $plugin; ?>App
 			foreach ($actionsToBake as $a=>$aConf):
 				$bFActions[]="'$a'";
 			endforeach;
-			$beforeFilterContent.="\$this->Auth->allow(".  implode(',', $bFActions).");\n";
+			if($this->isComponentEnabled('Auth')){
+				$beforeFilterContent.="\$this->Auth->allow(".  implode(',', $bFActions).");\n";
+			}
 		endif;
 	endif;
 	if(!empty($beforeFilterContent)):

@@ -23,7 +23,7 @@
  *
  * --------------------------------------------------------------------------*/
 // Include common options
-include "../common/common_options.ctp";
+include dirname(__FILE__).'/../common/common_options.ctp';
 
 /* ----------------------------------------------------------------------------
  * Current action options:
@@ -63,7 +63,7 @@ if($enableAuth): ?>
 else:
 	// Acls not enabled, so a flash message is displayed upon the form.
 	echo $this->setFlash('Acls are not enabled, you can\\\'t use this action.'
-			. ' To enable Acls, set the <code>theme.component.Auth.useComponent</code> to true in your config file,'
+			. ' To enable Acls, set the <code>theme.components.Auth.useComponent</code> to true in your config file,'
 			. ' and run superBake again.', 'error', "'/'", array('specialUrl' => true));
 endif;
 ?>

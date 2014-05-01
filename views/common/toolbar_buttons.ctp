@@ -11,24 +11,6 @@
  * @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
  * @package       ELCMS.superBake.Templates.Elabs.Views
  * @version       0.3
- *
- * ----
- *
- *  This file is part of EL-CMS.
- *
- *  EL-CMS is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  EL-CMS is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *
- *  You should have received a copy of the GNU General Public License
- *  along with EL-CMS. If not, see <http://www.gnu.org/licenses/>
  */
 // ---
 // Resetting options to defaults if not defined
@@ -43,11 +25,6 @@ if (!isset($toolbarHiddenControllers)) {
 if (!isset($viewIsAnItem)) {
 	$viewIsAnItem = false;
 }
-
-//// Actions per row
-//if (!isset($actionsPerRow)) {
-//	$actionsPerRow = 4;
-//}
 
 // Default button size:
 // --------------------
@@ -71,9 +48,6 @@ if ($noToolbar == false) {
 	// Definying final toolbar (will contain all the elements)
 	$toolbar = '';
 
-//	// Number of toolbar groups. Used to count items on rows. Default to -1 to know
-//	// that no row is currently opened
-//	$tbRowElements = -1;
 	// Total number of elements in the toolbar (used to display it or not)
 	$toolbarElements = 0;
 
@@ -107,19 +81,9 @@ if ($noToolbar == false) {
 	}
 	// Toolbar : Current controller
 	if (count($current_toolbar) > 0) {
-//		// Row management
-//		if ($tbRowElements == -1) {
-//			$toolbar.= $this->v_newRow('open');
-//			$tbRowElements = 1;
-//		}
 		// Element
 		$toolbar.= $this->v_newButtonGroup($current_toolbar);
 		$toolbarElements++;
-//		// Row management
-//		if ($tbRowElements == $actionsPerRow) {
-//			$toolbar.= $this->v_newRow('close');
-//			$tbRowElements = -1;
-//		}
 
 		// ---
 		// Related controllers actions :
@@ -129,12 +93,6 @@ if ($noToolbar == false) {
 
 			foreach ($data as $alias => $details) {
 				if ($details['controller'] != $this->name && !in_array($details['controller'], $done) && !in_array(Inflector::camelize($details['controller']), $toolbarHiddenControllers)) {
-//					// Row management
-//					if ($tbRowElements == -1) {
-//						$toolbar.= $this->v_newRow('open');
-//						$tbRowElements = 1;
-//					}
-//					$current_controller_actions = 0;
 					$current_toolbar = array();
 					// Related controllers actions : List / Add
 					if ($this->canDo('index', null, $details['controller'])) {
@@ -155,18 +113,10 @@ if ($noToolbar == false) {
 					}
 					$done[] = $details['controller'];
 					$toolbarElements++;
-//					// Row management
-//					if ($tbRowElements == $actionsPerRow) {
-//						$toolbar.= $this->v_newRow('close');
-//						$tbRowElements = -1;
 //					}
 				}
 			}
 		}
-//		// Row management
-//		if ($tbRowElements > -1) {
-//			$toolbar.=$this->v_newRow('close');
-//		}
 		// Toolbars wrapping
 		if ($toolbarElements > 0) {
 			echo "<div class=\"toolbar\">\n\t<strong><?php echo " . $this->iString('Tools:') . ";?></strong>\n$toolbar\n</div>\n";

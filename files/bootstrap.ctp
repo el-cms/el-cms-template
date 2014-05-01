@@ -4,7 +4,7 @@
  *
  * Options:
  * ========
- *  Options from theme:
+ * None
  *
  * @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
  * @author        Manuel Tancoigne <m.tancoigne@gmail.com>

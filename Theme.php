@@ -63,9 +63,9 @@ class Theme extends SbShell {
 
 	/* ---------------------------------------------------------------------------
 	 *
-	 * Methods about models/schema
+	 * Methods to work on schemas
 	 *
-	 */
+	 * ------------------------------------------------------------------------- */
 
 	/**
 	 * Updates the fields list considering the fields to be hidden and the different
@@ -346,9 +346,13 @@ class Theme extends SbShell {
 			// Datetimes
 			case 'datetime':
 				$tdClass = 'date-field';
-				$displayString = "<?php "
-								. "echo date(\$langDateFormats[\$lang], strtotime($fieldString));"
-								. " ?>";
+				if ($this->Sbc->getConfig('theme.languages.uselanguages')) {
+					$displayString = "<?php "
+									. "echo date(\$langDateFormats[\$lang], strtotime($fieldString));"
+									. " ?>";
+				} else {
+					$displayString = "<?php echo $fieldString; ?>";
+				}
 				break;
 
 			// Default
@@ -619,9 +623,9 @@ class Theme extends SbShell {
 	 * @param array $options List of options
 	 * @return string HTML div with content
 	 */
-	public function v_alert($content, $class, $options=array()) {
+	public function v_alert($content, $class, $options = array()) {
 		$alert = "<div class=\"alert alert-$class\" data-alert=\"alert\">";
-		if ($options['haveCloseButton']) {
+		if (!empty($options['haveCoseButton']) && $options['haveCloseButton'] === true) {
 			$alert.='<button type="button" class="close" data-dismiss="alert">&times;</button>';
 		}
 		$alert.=$content;
@@ -755,8 +759,8 @@ class Theme extends SbShell {
 	}
 
 	public function v_icon($icon, $title = null) {
-		if($this->Sbc->getConfig('theme.useIcons')){
-			$iconStyle=$this->Sbc->getConfig('theme.iconPack');
+		if ($this->Sbc->getConfig('theme.useIcons')) {
+			$iconStyle = $this->Sbc->getConfig('theme.iconPack');
 			return "<i class=\"$iconStyle $iconStyle-$icon\"" . ((!is_null($title)) ? " title=\"$title\"" : '') . "></i> ";
 		}
 	}
@@ -919,7 +923,7 @@ class Theme extends SbShell {
 				return 'date("Y-m-d H:i:s")';
 				break;
 			case '%self%':
-				return "\$this->Session->read('Auth.".$this->Sbc->getConfig('theme.components.Auth.userModel').'.'.$this->Sbc->getConfig('theme.components.Auth.userModelPK')."')";
+				return "\$this->Session->read('Auth." . $this->Sbc->getConfig('theme.components.Auth.userModel') . '.' . $this->Sbc->getConfig('theme.components.Auth.userModelPK') . "')";
 			default:
 				return "'$condition'";
 				break;

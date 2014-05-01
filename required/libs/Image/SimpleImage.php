@@ -40,7 +40,10 @@ class SimpleImage {
 
 	/**
 	 * Loads an image
+	 *
 	 * @param string $filename Image to load
+	 *
+	 * @return boolean True in case of success, false on failure.
 	 */
 	function load($filename) {
 		if (!$image_info = getimagesize($filename)) {
@@ -68,11 +71,14 @@ class SimpleImage {
 
 	/**
 	 * Saves an image
+	 *
 	 * @param string $filename Image file name
-	 * @param bool $original Save the original image if true, modified if false.
+	 * @param boolean $original Save the original image if true, modified if false.
 	 * @param string $image_type Image format
-	 * @param int $compression Compression rate (mainly for Jpgs)
-	 * @param int $permissions Permissions for the new file
+	 * @param integer $compression Compression rate (mainly for Jpgs)
+	 * @param integer $permissions Permissions for the new file
+	 *
+	 * @return boolean True in case of success, false on failure.
 	 */
 	function save($filename, $original = false, $image_type = null, $compression = 75, $permissions = null) {
 		// Selecting image
@@ -82,7 +88,6 @@ class SimpleImage {
 		}
 		if ($image_type == IMAGETYPE_JPEG) {
 			if (!imagejpeg($image, $filename, $compression)) {
-//				die();
 				return false;
 			}
 		} elseif ($image_type == IMAGETYPE_GIF) {
@@ -105,7 +110,9 @@ class SimpleImage {
 	 * Returns the image without saving it. Useful for direct rendering
 	 *
 	 * @param string $image_type Image format
-	 * @param bool $original Display original image if true, modified image if false.
+	 * @param boolean $original Display original image if true, modified image if false.
+	 *
+	 * @return void
 	 */
 	function output($image_type = IMAGETYPE_JPEG, $original = true) {
 		$image = ($original == true) ? $this->image : $this->currentImage;
@@ -120,16 +127,17 @@ class SimpleImage {
 
 	/**
 	 * Gets the image width
-	 * @return int
+	 *
+	 * @return integer Image width
 	 */
 	function getWidth() {
 		return imagesx($this->currentImage);
 	}
 
 	/**
-	 * Gets the image height
-	 * @param bool $currentImage If false, will return original image width, else the current image (modified one)
-	 * @returns int
+	 * Gets the current image height
+	 *
+	 * @returns integer image height
 	 */
 	function getHeight() {
 		return imagesy($this->currentImage);
@@ -137,7 +145,10 @@ class SimpleImage {
 
 	/**
 	 * Resize image to desired height. Width will be resized with a ratio.
-	 * @param int $height Desired height
+	 *
+	 * @param integer $height Desired height
+	 *
+	 * @return void
 	 */
 	function resizeToHeight($height) {
 		$ratio = $height / $this->getHeight();
@@ -148,7 +159,10 @@ class SimpleImage {
 
 	/**
 	 * Resize image to desired width. Height will be resized with a ratio.
-	 * @param int $width Desired width
+	 *
+	 * @param integer $width Desired width
+	 *
+	 * @return void
 	 */
 	function resizeToWidth($width) {
 		$ratio = $width / $this->getWidth();
@@ -159,7 +173,10 @@ class SimpleImage {
 
 	/**
 	 * Resize an image using a certain scale.
-	 * @param int $scale Scale factor
+	 *
+	 * @param integer $scale Scale factor
+	 *
+	 * @return void
 	 */
 	function scale($scale) {
 		$width = $this->getWidth() * $scale / 100;
@@ -170,8 +187,11 @@ class SimpleImage {
 
 	/**
 	 * Resize image to given width and height
-	 * @param int $width Desired width
-	 * @param int $height Desired height
+	 *
+	 * @param integer $width Desired width
+	 * @param integer $height Desired height
+	 *
+	 * @return void
 	 */
 	function resize($width, $height) {
 		$new_image = imagecreatetruecolor($width, $height);
@@ -181,10 +201,13 @@ class SimpleImage {
 
 	/**
 	 * Crops the current image to the desired dimensions
-	 * @param int $width Desired width
-	 * @param int $height Desired height
-	 * @param int $startX Crop horizontal start point
-	 * @param int $startY Crop vertical start point
+	 *
+	 * @param integer $width Desired width
+	 * @param integer $height Desired height
+	 * @param integer $startX Crop horizontal start point
+	 * @param integer $startY Crop vertical start point
+	 *
+	 * @return void
 	 */
 	function crop($width, $height, $startX = 0, $startY = 0, $scale = 1) {
 		// Getting image width/height
@@ -210,6 +233,15 @@ class SimpleImage {
 		$this->log("Crop: X=$width, Y=$height");
 	}
 
+	/**
+	 * Center crops an image to the desired width and height.
+	 * The cropped image will be in the center of the original image.
+	 *
+	 * @param integer $width Image width, in pixels
+	 * @param integer $height Image height, in pixels
+	 *
+	 * @return void
+	 */
 	function centerCrop($width, $height) {
 		// Determining start points
 		$imgX = $this->getWidth();
@@ -308,6 +340,13 @@ class SimpleImage {
 		return $this->log;
 	}
 
+	/**
+	 * Resize the image, based on th smallest side.
+	 *
+	 * @param integer $size Desired size for the smallest side
+	 *
+	 * @return void
+	 */
 	function resizeSmallestTo($size) {
 		if ($this->getHeight() >= $this->getWidth()) {
 			//Must resize width
@@ -318,6 +357,11 @@ class SimpleImage {
 		}
 	}
 
+	/**
+	 * Resize the image, based on th biggest side.
+	 *
+	 * @param integer $size Desired size for the biggest side
+	 */
 	function resizeBiggestTo($size) {
 		if ($this->getHeight() <= $this->getWidth()) {
 			//Must resize width

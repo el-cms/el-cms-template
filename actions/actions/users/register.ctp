@@ -5,7 +5,7 @@
  * Options:
  * ========
  *  - layout: string, null
- *  - From theme.component.Auth:
+ *  - From theme.components.Auth:
  *    - userStatusField: string
  *    - defaultStatus: string|int
  *    - userCanChooseRole: bool
@@ -28,20 +28,20 @@
  *
  * --------------------------------------------------------------------------*/
 // Include common options
-include "../common/common_options.ctp";
+include dirname(__FILE__).'/../common/common_options.ctp';
 
 /* ----------------------------------------------------------------------------
  * Current action options:
  */
 
 // User status field
-$userStatusField = $this->Sbc->getConfig('theme.component.Auth.userStatusField');
+$userStatusField = $this->Sbc->getConfig('theme.components.Auth.userStatusField');
 // Default user status
-$defaultStatus = $this->Sbc->getConfig('theme.component.Auth.defaultUserStatus');
+$defaultStatus = $this->Sbc->getConfig('theme.components.Auth.defaultUserStatus');
 // Ability for an user to choose his role
-$userCanChooseRole = $this->Sbc->getConfig('theme.component.Auth.userCanChooseRole');
+$userCanChooseRole = $this->Sbc->getConfig('theme.components.Auth.userCanChooseRole');
 // Default role id for new users
-$defaultRoleId=$this->Sbc->getConfig('theme.component.Auth.defaultRoleId');
+$defaultRoleId=$this->Sbc->getConfig('theme.components.Auth.defaultRoleId');
 
 /* ----------------------------------------------------------------------------
  *

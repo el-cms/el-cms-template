@@ -4,10 +4,6 @@
  *
  * This snippet prepares the options that are in common with all the actions.
  *
- * It handles :
- * ============
- *  -
- *
  *
  * @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
  * @author        Manuel Tancoigne <m.tancoigne@gmail.com>

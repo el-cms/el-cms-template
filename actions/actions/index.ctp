@@ -80,63 +80,6 @@ public function <?php echo $admin . $a ?>() {
 <?php
 
 //
-// Support for language fields
-//
-//if ($this->Sbc->getConfig('theme.language.useLanguages') === true):
-//	// Language fields should be set in config, so we check
-//	if (count($languageFields) === 0):
-//		$this->speak(__d('superBake', ' - No languageField defined. All fields will be returned.'), 'warning');
-//	else:
-//		? >
-//		$lang = Configure::read('Config.language');
-//		$fallback = Configure::read('website.defaultLang');
-//		//<?php
-//		$paginateOptions.="\t\t\t'fields' => array(\n\t\t\t\t// Fallback\n";
-//		foreach ($languageFields as $l):
-//			'_' . $this->Sbc->getConfig('theme.language.fallback');
-//			$paginateOptions.="\t\t\t\t'$currentModelName.{$l}_' . \$fallback . ' as {$l}_default',\n";
-//			$paginateOptions.="\t\t\t\t'$currentModelName.{$l}_' . \$lang . ' as $l',\n";
-//			foreach ($this->Sbc->getConfig('theme.language.available') as $lang):
-//				unset($fields[$l . '_' . $lang]);
-//			endforeach;
-//		endforeach;
-//		// Other fields:
-//		$paginateOptions.="\t\t\t\t// Other fields\n";
-//		foreach ($fields as $f => $fConfig):
-//			$paginateOptions.="\t\t\t\t'$currentModelName.$f',\n";
-//		endforeach;
-//		// Related fields
-//		$paginateOptions.="\t\t\t// BelongsTo fields\n";
-//		foreach ($modelObj->belongsTo as $f => $fConfig):
-//			// Finding fields params:
-//			$fElements = explode('.', $fConfig['className']);
-//			// Plugin and model
-//			if (count($fElements) > 1):
-//				$fPlugin = $fElements[0] . '.';
-//				$fModel = $fElements[1];
-//			else:
-//				$fPlugin = null;
-//				$fModel = $fElements[0];
-//			endif;
-//
-//			// Fields
-//			App::uses($fModel, $fPlugin . 'Model');
-//			if (!class_exists($fModel)):
-//				$this->err(__d('superBake', 'You should already have baked the controller dependencies (linked models) to build this method with the current options set. Please try again.'));
-//				$this->_stop();
-//			endif;
-//			$lModel = ClassRegistry::init($fModel);
-//			$displayField = $lModel->displayField;
-//			$primaryKey = $lModel->primaryKey;
-//
-//			$paginateOptions.="\t\t\t\t'$fModel.$primaryKey',\n";
-//			$paginateOptions.="\t\t\t\t'$fModel.$displayField',\n";
-//		endforeach;
-//		$paginateOptions.="\t\t\t),\n";
-//	endif;
-//endif;
-
-//
 // Pagination order
 //
 if (!is_null($defaultSortBy)):

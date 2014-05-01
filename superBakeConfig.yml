@@ -116,6 +116,7 @@ theme:
       # Default is true.
       useComponent: false
     Auth:
+      useComponent: true
       ## Roles model (usually Group or Role)
       roleModel: Group
       ## Role primary key
@@ -506,10 +507,6 @@ defaults:
     template:
     ## Folder where the file must be copied (relative to final plugin directory)
     targetPath:
-    ## Final file name
-#    targetFileName:
-    ## Target extension
-#    ext: ctp
     ## Options for the file templates
     options: []
     ## Generate the file ?
@@ -525,8 +522,6 @@ defaults:
     template:
     ## Target folder (relative to detination plugin's "View/" folder)
     targetPath: Elements::menus
-    ## Final file name
-    ## Target extension
     ## Options
     options:
       ## List of routing prefixes to be displayed in the menu.
@@ -626,6 +621,9 @@ plugins:
               logout:
                 template: users::logout
               view:
+                options:
+                  conditions:
+                    Likes.anon: 0
 #                blackListed: true
               index:
                 blackListed: true
@@ -829,6 +827,8 @@ plugins:
       layout_login:
         targetPath: View::Layouts::login.ctp
         template: layouts::login
+        options:
+          style: public
       ##
       ## Footer bar
       footer:
@@ -934,6 +934,12 @@ plugins:
         type: file
         source: js::jquery-1.10.2.min.js
         target: webroot::js::jquery-1.10.2.min.js
+      ##
+      ## Bootstrap scripts
+      js-bootstrap:
+        type: file
+        source: css::twitter-bootstrap::dist::js::bootstrap.min.js
+        target: webroot::js::bootstrap.min.js
 
       ##
       ## Icons Font
