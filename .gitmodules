@@ -13,6 +13,3 @@
 [submodule "required/js/fancybox"]
 	path = required/js/fancybox
 	url = git://github.com/fancyapps/fancyBox.git
-[submodule "docs"]
-	path = docs
-	url = git://github.com/el-cms/el-cms-template-doc.git
