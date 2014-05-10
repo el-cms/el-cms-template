@@ -161,48 +161,67 @@ theme:
   ## Look at the '<defaultTemplate>/files/elements/flash_message.ctp' file.
   ## Define the different elements in a plugin's 'files' section (i.e.: 'appBase.files')
   flashMessageElement: true
-  ## Default class for a form:
-  formClass: form-horizontal
+
+  ## Custom layout options:
+  layout:
+    ## Use icons ?
+    useIcons: true
+    ## Icon pack
+    iconPack: fa
+    ## Default class for a form:
+    formClass: form-horizontal
+    ## Default class for a definition list (<dl>)
+    dlClass: dl-horizontal
 
   ## Defines if each prefix have its own layout for rendered pages.
   ## If so, don't forget to define them in the appBase.files section.
   useLayoutsForPrefixes: true
 
-  ## Defines if the system use a kind of Safe For Work limitations
-  useSFW: true
+  ## Support for safe/nsfw content
+  sfw:
+    ## Defines if the system use a kind of Safe For Work limitations
+    useSFW: true
 
-  ## Field that describes an item as sfw:
-  sfwField: sfw
+    ## Field that describes an item as sfw:
+    field: sfw
 
-  ## Fields that may contain nsfw data:
-  nsfwDataFields:
-    image
-    file
-    text
-    excerpt
-    description
-    content
-    data
-    link
+    ## Content of the sfw field that define it as safe
+    fieldUnSafeContent: 0
 
-  ## Use anonymous data
-  useAnon: true
+    ## Content of the sfw field that define is as unsafe
+    fieldSafeContent: 1
 
-  ## Field that describes an item as anonymous
-  anonField: anon
+    ## Fields that may contain nsfw data:
+    dataFields:
+      image
+      file
+      text
+      excerpt
+      description
+      content
+      data
+      link
 
-  ## Fields that can compromise the user anonymity
-  anonDataFields:
-    email
-    pseudo
-    name
-    realname
-  ## foreign key linking the user to the item:
-  anonFK: user_id
-  ## Name of the anonymous user:
-  anonName: Anonymous
-  ## UserId for the anon user
-  anonId: 2
+  ## Support for anonymous content
+  anon:
+    ## Use anonymous data
+    useAnon: true
+
+    ## Field that describes an item as anonymous
+    field: anon
+
+    ## Fields that can compromise the user anonymity
+    dataFields:
+      email
+      pseudo
+      name
+      realname
+    ## foreign key linking the user to the item:
+    foreignKey: user_id
+    ## UserId for the anon user
+    foreignKeyDataReplacement: 2
+    ## Name of the anonymous user:
+    userName: Anonymous
 
 
   ## languages available in app:
@@ -227,13 +246,10 @@ theme:
       fra: d-m-Y \à H:i
       eng: Y-m-d \a\t h:ia
 
-  ## Use icons ?
-  useIcons: true
-  ## Icon pack
-  iconPack: fa
-
-  ## Use Gravatar avatars ?
-  useGravatar: true
+  ## Support for gravatars
+  gravatar:
+    ## Use Gravatar avatars ?
+    useGravatar: true
 
 
 
@@ -328,6 +344,8 @@ defaults:
               modified
               password
               email
+              anon
+              sfw
       ## View action
       view:
         options:
@@ -342,6 +360,8 @@ defaults:
               modified
               password
               email
+              anon
+              sfw
     ## User prefix
     user:
       index:
@@ -602,6 +622,11 @@ plugins:
           snippets:
             acls:
               path: acls::users
+          options:
+            actsAs:
+              Acl:
+                type: requester
+
         controller:
           actions:
             ## Public actions
@@ -622,9 +647,18 @@ plugins:
                 template: users::logout
               view:
                 options:
-                  conditions:
-                    Likes.anon: 0
-#                blackListed: true
+                  containConditions:
+                    Post:
+                      %noAnon%:
+                      published: 1
+                    Gallery:
+                      %noAnon%
+                    GalleryItem:
+                      %noAnon%
+                    Link:
+                      %NoAnon%
+                    Note:
+                      %noAnon%
               index:
                 blackListed: true
             user:
@@ -703,7 +737,10 @@ plugins:
           snippets:
             acls:
               path: acls::roles
-              options: []
+          options:
+            actsAs:
+              Acl:
+                type: requester
     ##
     ## Menus for AppBase
     ##
@@ -759,9 +796,9 @@ plugins:
               c: Galleries
               a: index
               t: cakeUrl
-            Likes:
-              p: Likes
-              c: Likes
+            Notes:
+              p: Notes
+              c: Notes
               a: index
               t: cakeUrl
             Links:
@@ -1091,7 +1128,6 @@ plugins:
                   hiddenAssociations:
                     User
             admin:
-              bug:
 
         options:
           icon: book
@@ -1103,6 +1139,10 @@ plugins:
           actions:
             public:
               view:
+                options:
+                  containConditions:
+                    Post:
+                      published: 1
                 view:
                   options:
                     assoc_hiddenModelFields:
@@ -1205,12 +1245,12 @@ plugins:
   ##  Stuff I liked on the internet. A kind of "a la Facebook" sharing wall
   ## --------------------------------------------------------------------------
   ##
-  Likes:
+  Notes:
     options:
-      icon: heart
+      icon: pencil
     parts:
       ## The list
-      Likes:
+      Notes:
         controller:
           actions:
             user:
@@ -1219,7 +1259,7 @@ plugins:
                   conditions:
                     user_id: %self%
         options:
-          icon: heart
+          icon: pencil
   ## --------------------------------------------------------------------------
   ##  Links plugin
   ## ----------------------------

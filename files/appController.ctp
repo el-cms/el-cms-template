@@ -173,7 +173,7 @@ endforeach;
 		<?php
 		//
 		// Safe for work option
-		if($this->Sbc->getConfig('theme.useSFW')===true):
+		if($this->Sbc->getConfig('theme.sfw.useSFW')===true):
 			?>
 		// Safe for work state:
 		$this->set('seeNSFW', $this->_nsfw());
@@ -273,7 +273,7 @@ endforeach;
 /* * ***********************************************************************
  * SFW check
  */
-if($this->Sbc->getConfig('theme.useSFW')===true):
+if($this->Sbc->getConfig('theme.sfw.useSFW')===true):
 	?>
 
 

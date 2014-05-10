@@ -18,9 +18,12 @@
 if ($isPublicMenu):
 	echo "<?php if (is_array(\$this->Session->read('Auth.User'))) { ?>\n";
 endif;
+
+// Gravatar support
+$userIcon=($this->Sbc->getConfig('theme.gravatar.useGravatar'))?"<?php echo \$this->Html->image(\$this->Html->gravatar(\$this->Session->read('Auth.User.email'), 25), array('class'=>'nav-avatar'))?>":"<i class=\"fa fa-user\"></i>";
 ?>
 <li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo "<?php echo \$this->Html->image(\$this->Html->gravatar(\$this->Session->read('Auth.User.email'), 25), array('class'=>'nav-avatar'))?> <?php echo \$this->Session->read('Auth.User.username') ?>" ?> <b class="caret"></b></a>
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo "$userIcon <?php echo \$this->Session->read('Auth.User.username') ?>" ?> <b class="caret"></b></a>
 	<ul class="dropdown-menu">
 		<li><?php echo "<?php echo \$this->Html->link(" . $this->iString('Dashboard') . ", " . $this->url('dashboard', 'Users', 'user') . '); ?>' ?></li>
 		<li><?php echo "<?php echo \$this->Html->link(" . $this->iString('Profile') . ", " . $this->url('view', 'Users', 'user', "\$this->Session->read('Auth.User.id')") . '); ?>' ?></li>

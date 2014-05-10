@@ -62,11 +62,11 @@ $languageFields = (!isset($languageFields)) ? array() : $languageFields;
 $listIsCompact = false;
 
 // SFW field. Can be empty/null.
-if (!isset($sfwField)) {
+if (!isset($sfwField) || !$this->Sbc->getConfig('theme.sfw.useSFW')) {
 	$sfwField = null;
 	$sfwContent = null;
 } else {
-	$sfwContent = "<?php echo (\${$singularVar}['{$modelClass}']['{$sfwField}']==1)"
+	$sfwContent = "<?php echo (\${$singularVar}['{$modelClass}']['{$sfwField}']==".$this->Sbc->getConfig('theme.sfw.fieldSafeContent').")"
 					. "?'<i class=\"fa fa-check text-success\" title=\"' . " . $this->iString('This content is safe for young people or work browsing') . " . '\" data-toggle=\"tooltip\"></i> '\n"
 					. ":'<i class=\"fa fa-times text-warning\" title=\"' . " . $this->iString('This content may not be viewable in most circumstancies') . " . '\" data-toggle=\"tooltip\"></i> '; ?>\n";
 }
@@ -88,9 +88,9 @@ if (!isset($contentField)) {
 } else {
 	// support for sfw states
 	if ($sfwField) {
-		$contentContent = "<?php echo (\${$singularVar}['{$modelClass}']['{$sfwField}']==1)?\${$singularVar}['{$modelClass}']['{$contentField}']:" . $this->iString('The content may not be safe for work and will not be displayed.') . "; ?>\n";
+		$contentContent = "<?php echo (\${$singularVar}['{$modelClass}']['{$sfwField}']==".$this->Sbc->getConfig('theme.sfw.fieldSafeContent').")?\${$singularVar}['{$modelClass}']['{$contentField}']:" . $this->iString('The content may not be safe for work and will not be displayed.') . "; ?>\n";
 		// Style for content
-		$contentStyle = " <?php echo (\${$singularVar}['{$modelClass}']['{$sfwField}']==0)?'text-muted':'';?>";
+		$contentStyle = " <?php echo (\${$singularVar}['{$modelClass}']['{$sfwField}']==".$this->Sbc->getConfig('theme.sfw.fieldUnSafeContent').")?'text-muted':'';?>";
 	} else {// No SFW field
 		$contentContent = "<?php echo \${$singularVar}['{$modelClass}']['{$contentField}']; ?>\n";
 		// Style for content:

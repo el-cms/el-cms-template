@@ -21,13 +21,21 @@ Theme modifications
 	background-color: @brand-success;
 }
 
+h2.inline{
+	display:inline-block;
+	margin:3px;
+}
+.header-content{
+	margin-left: 15px;
+}
+
 /*
  * Plugins containers
  */
 // Shared styles:
 .container-blog,
 .container-gallery,
-.container-likes,
+.container-notes,
 .container-links,
 .container-other,
 .container-projects{
@@ -59,7 +67,7 @@ Theme modifications
 	}
 }
 // Likes
-.container-likes{
+.container-notes{
 	border: 3px solid @likesColor;
 	.box-shadow(0px 0px 2px 1px darken(@likesColor, 20%));
 	.toolbar{
@@ -127,6 +135,9 @@ Theme modifications
 	margin-bottom: 10px;
 	.article-list-header, .article-list-footer{
 		padding:5px;
+	}
+	.article-list-footer{
+		.small;
 	}
 	.article-list-content{
 		border-top: 1px solid lighten(@blogColor, 15%);

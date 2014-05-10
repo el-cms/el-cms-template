@@ -206,13 +206,13 @@ class Theme extends SbShell {
 	 * @return boolean
 	 */
 	public function s_haveSFW($schema = null) {
-		if ($this->Sbc->getConfig('theme.useSFW')) {
+		if ($this->Sbc->getConfig('theme.sfw.useSFW')) {
 
 			//Schema given: field list
 			if (!is_null($schema)) {
-				return in_array($this->Sbc->getConfig('theme.sfwField'), $schema);
+				return in_array($this->Sbc->getConfig('theme.sfw.field'), $schema);
 			} else {
-				return array_key_exists($this->Sbc->getConfig('theme.sfwField'), $this->templateVars['schema']);
+				return array_key_exists($this->Sbc->getConfig('theme.sfw.field'), $this->templateVars['schema']);
 			}
 		}
 	}
@@ -225,12 +225,12 @@ class Theme extends SbShell {
 	 * @return boolean
 	 */
 	public function s_haveAnon($schema = null) {
-		if ($this->Sbc->getConfig('theme.useAnon')) {
+		if ($this->Sbc->getConfig('theme.anon.useAnon')) {
 			// Schema given : field list
 			if (!is_null($schema)) {
-				return in_array($this->Sbc->getConfig('theme.anonField'), $schema);
+				return in_array($this->Sbc->getConfig('theme.anon.field'), $schema);
 			} else {
-				return array_key_exists($this->Sbc->getConfig('theme.anonField'), $this->templateVars['schema']);
+				return array_key_exists($this->Sbc->getConfig('theme.anon.field'), $this->templateVars['schema']);
 			}
 		}
 	}
@@ -472,17 +472,17 @@ class Theme extends SbShell {
 
 		switch ($inRelation) {
 			case 'hasOne':
-				$anonField = "\${$this->templateVars['singularVar']}['$relatedModel']['{$this->Sbc->getConfig('theme.anonField')}']";
+				$anonField = "\${$this->templateVars['singularVar']}['$relatedModel']['{$this->Sbc->getConfig('theme.anon.field')}']";
 				break;
 			case 'hasMany':
-				$anonField = "\$" . Inflector::variable(Inflector::singularize($relatedModel)) . "['{$this->Sbc->getConfig('theme.anonField')}']";
+				$anonField = "\$" . Inflector::variable(Inflector::singularize($relatedModel)) . "['{$this->Sbc->getConfig('theme.anon.field')}']";
 				break;
 			default:
-				$anonField = "\${$this->templateVars['singularVar']}['{$this->templateVars['modelClass']}']['{$this->Sbc->getConfig('theme.anonField')}']";
+				$anonField = "\${$this->templateVars['singularVar']}['{$this->templateVars['modelClass']}']['{$this->Sbc->getConfig('theme.anon.field')}']";
 				break;
 		}
 
-		if ($field == $this->Sbc->getConfig('theme.anonFK')) {
+		if ($field == $this->Sbc->getConfig('theme.anon.foreignKey')) {
 			$displayString = ""
 							. "if($anonField==1):"
 							. "\techo __('Anonymous');"
@@ -551,19 +551,19 @@ class Theme extends SbShell {
 
 		switch ($inRelation) {
 			case 'hasOne':
-				$sfwField = "\${$this->templateVars['singularVar']}['$relatedModel']['{$this->Sbc->getConfig('theme.sfwField')}']";
+				$sfwField = "\${$this->templateVars['singularVar']}['$relatedModel']['{$this->Sbc->getConfig('theme.sfw.field')}']";
 				break;
 			case 'hasMany':
-				$sfwField = "\$" . Inflector::variable(Inflector::singularize($relatedModel)) . "['{$this->Sbc->getConfig('theme.sfwField')}']";
+				$sfwField = "\$" . Inflector::variable(Inflector::singularize($relatedModel)) . "['{$this->Sbc->getConfig('theme.sfw.field')}']";
 				break;
 			default:
 				$sfwField = "\${$this->templateVars['singularVar']}['{$this->templateVars['modelClass']}']"
-								. "['" . $this->Sbc->getConfig('theme.sfwField') . "']";
+								. "['" . $this->Sbc->getConfig('theme.sfw.field') . "']";
 				break;
 		}
 
-		if (in_array($field, $this->Sbc->getConfig('theme.nsfwDataFields'))) {
-			return "if($sfwField == 0 && \$seeNSFW == false): ?>\n"
+		if (in_array($field, $this->Sbc->getConfig('theme.sfw.dataFields'))) {
+			return "if($sfwField == " . $this->Sbc->getConfig('theme.sfw.fieldUnSafeContent') . " && \$seeNSFW == false): ?>\n"
 							. "<div class=\"text-muted\">\n"
 							. "\t<?php echo " . $this->iString('This content may not be safe for work or young people, and will not be displayed.') . "?>\n"
 							. "</div>\n"
@@ -759,8 +759,8 @@ class Theme extends SbShell {
 	}
 
 	public function v_icon($icon, $title = null) {
-		if ($this->Sbc->getConfig('theme.useIcons')) {
-			$iconStyle = $this->Sbc->getConfig('theme.iconPack');
+		if ($this->Sbc->getConfig('theme.layout.useIcons')) {
+			$iconStyle = $this->Sbc->getConfig('theme.layout.iconPack');
 			return "<i class=\"$iconStyle $iconStyle-$icon\"" . ((!is_null($title)) ? " title=\"$title\"" : '') . "></i> ";
 		}
 	}
@@ -911,6 +911,80 @@ class Theme extends SbShell {
 	 * *********************************************************************** */
 
 	/**
+	 * Returns the 'contain' conditions for find() method.
+	 *
+	 * @param string $model Current model name.
+	 * @param array $options Find condition for related data
+	 * @return array
+	 */
+	public function c_findContains($model, $options = array()) {
+		//Treating options:
+		if (!isset($options['hiddenAssociations'])) {
+			$options['hiddenAssociations'] = array();
+		}
+		if (!isset($options['conditions'])) {
+			$options['conditions'] = array();
+		}
+
+		$relations = array();
+		// Getting model relations
+		foreach ($model->hasOne as $assoc => $config) {
+			if (!in_array($assoc, $options['hiddenAssociations'])) {
+				$relations[$assoc] = array();
+			}
+		}
+		foreach ($model->hasMany as $assoc => $config) {
+			if (!in_array($assoc, $options['hiddenAssociations'])) {
+				$relations[$assoc] = array();
+			}
+		}
+		foreach ($model->belongsTo as $assoc => $config) {
+			if (!in_array($assoc, $options['hiddenAssociations'])) {
+				$relations[$assoc] = array();
+			}
+		}
+		foreach ($model->hasAndBelongsToMany as $assoc => $config) {
+			if (!in_array($assoc, $options['hiddenAssociations'])) {
+				$relations[$assoc] = array();
+			}
+		}
+
+		foreach ($relations as $rel => $config) {
+			$currentConditions = array();
+			if (isset($options['conditions'][$rel])) {
+				$currentConditions = $this->c_containConditions($options['conditions'][$rel]);
+			}
+			if (count($currentConditions)>0) {
+				$relations[$rel]['conditions'] = $currentConditions;
+			}
+		}
+
+		return $relations;
+	}
+
+	/**
+	 * Adds conditions for the containable behavior.
+	 * @param type $conditions
+	 * @return string
+	 */
+	public function c_containConditions($conditions = array()) {
+		$return = array();
+		foreach ($conditions as $condition => $value) {
+			switch ($condition) {
+				case '%noAnon%':
+					if ($this->Sbc->getConfig('theme.anon.useAnon')) {
+						$return[$this->Sbc->getConfig('theme.anon.field')] = 0;
+					}
+					break;
+				default:
+					$return[$condition] = $value;
+					break;
+			}
+		}
+		return $return;
+	}
+
+	/**
 	 * Outputs a condition for a find/paginate call by replacing vars by actual code.
 	 *
 	 * @param string $condition The condition string
@@ -921,7 +995,6 @@ class Theme extends SbShell {
 		switch ($condition) {
 			case '%now%':
 				return 'date("Y-m-d H:i:s")';
-				break;
 			case '%self%':
 				return "\$this->Session->read('Auth." . $this->Sbc->getConfig('theme.components.Auth.userModel') . '.' . $this->Sbc->getConfig('theme.components.Auth.userModelPK') . "')";
 			default:
@@ -941,16 +1014,13 @@ class Theme extends SbShell {
 	 */
 	public function c_parseSize($size) {
 		$suffixes = array(
-				'' =>
-				1,
+				'' => 1,
 				'k' => 1024,
 				'm' => 1048576, // 1024 * 1024
 				'g' => 1073741824, // 1024 * 1024 * 1024
 		);
-		if (
-						preg_match('/([0-9]+)\s*(k|m|g)?(b?(ytes?)?)/i', $size, $match)) {
-			return $match[1] * $suffixes[
-							strtolower($match[2])];
+		if (preg_match('/([0-9]+)\s*(k|m|g)?(b?(ytes?)?)/i', $size, $match)) {
+			return $match[1] * $suffixes[strtolower($match[2])];
 		}
 	}
 
@@ -962,15 +1032,13 @@ class Theme extends SbShell {
 	 * @staticvar integer $max_size
 	 * @return integer A file size limit in bytes based on the PHP upload_max_filesize and post_max_size
 	 */
-	public function c_getFileUploadMaxSize
-	() {
+	public function c_getFileUploadMaxSize() {
 		$max_size = -1;
 
 		if ($max_size < 0) {
 			$upload_max = parseSize(ini_get('upload_max_filesize'));
 			$post_max = parseSize(ini_get('post_max_size'));
-			$max_size = ($upload_max < $post_max) ? $upload_max :
-							$post_max;
+			$max_size = ($upload_max < $post_max) ? $upload_max : $post_max;
 		}
 		return $max_size;
 	}
@@ -982,31 +1050,4 @@ class Theme extends SbShell {
 	 *
 	 *
 	 * ------------------------------------------------------------------------ */
-
-	/**
-	 * Replacement of var_export, output is on one line, strings are protected and
-	 * vars kepts as vars.
-	 *
-	 * This method is recursive.
-	 *
-	 * @param array $array The array to display
-	 * @return string
-	 */
-	public function displayArray($array) {
-		$out = null;
-		$i = 0;
-		foreach ($array as $k => $v) {
-			if (is_array($v)) {
-				$out = $this->displayArray($v);
-			} else {
-				if ($i > 0) {
-					$out.=", ";
-				}
-				$out.="'$k'=>" . (($v[0] === '$') ? $v : "'$v'");
-			}
-			$i++;
-		}
-		return "array($out)";
-	}
-
 }

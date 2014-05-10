@@ -115,7 +115,7 @@ if (!isset($authorField)) {
 }
 
 // SFW field. Optionnal
-if (!isset($sfwField)) {
+if (!isset($sfwField) || !$this->Sbc->getConfig('theme.sfw.useSFW')) {
 	$sfwField = null;
 }
 
@@ -148,7 +148,7 @@ if (!isset($itemTarget)) {
 }
 
 // Item SFW. Optionnal
-if (!isset($itemSfw)) {
+if (!isset($itemSfw) || !$this->Sbc->getConfig('theme.sfw.useSFW')) {
 	$itemSfw = null;
 }
 
@@ -204,7 +204,7 @@ endif;
 	echo "<?php\n\t\$string=" . $this->iString("This " . strtolower("$singularHumanName")) . ";\n";
 	// Sfw:
 	if (!is_null($sfwField)):
-		echo "\tif(\${$singularVar}['{$modelClass}']['{$sfwField}'] === 1):\n"
+		echo "\tif(\${$singularVar}['{$modelClass}']['{$sfwField}'] === ". $this->Sbc->getConfig('theme.sfw.fieldSafeContent')."):\n"
 		. "\t\t\$string .= " . $this->iString(' is safe for work.') . ";\n"
 		. "\telse:\n"
 		. "\t\t\$string .= " . $this->iString(' is NOT safe for work.') . ";\n"

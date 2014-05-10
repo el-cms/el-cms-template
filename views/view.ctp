@@ -84,12 +84,12 @@ if (!isset($relatedDataHideActionsList)) {
 //// Fields that possibly contain nsfw data:
 //$nsfwDataFields=$this->Sbc->getConfig('theme.nsfwDataFields');
 //// Fields that possibly can define if an item is safe or not:
-//$sfwField=$this->Sbc->getConfig('theme.sfwField');
+//$sfwField=$this->Sbc->getConfig('theme.sfw.sfwField');
 //
 //// Fields that defines a post as anonymous
-//$anonField=$this->Sbc->getConfig('theme.anonField');
+//$anonField=$this->Sbc->getConfig('theme.anon.field');
 //// Fields that can contain data compromising user anonymity
-//$anonDataFields=$this->Sbc->getConfig('theme.anonDataFields');
+//$anonDataFields=$this->Sbc->getConfig('theme.anon.dataFields');
 
 /* ----------------------------------------------------------------------------
  * related data options
@@ -214,7 +214,7 @@ endif;
 		foreach ($associations['hasOne'] as $alias => $details):
 
 			// Keep a copy of the original fields list for later use
-			$originalFieldsList=$details['fields'];
+			$originalFieldsList = $details['fields'];
 			// Prepare the fields
 			$details = $this->s_prepareSchemaRelatedFields($alias, $details, true);
 
@@ -273,6 +273,8 @@ if (empty($associations['hasAndBelongsToMany'])):
 endif;
 $relations = array_merge($associations['hasMany'], $associations['hasAndBelongsToMany']);
 $i = 0;
+// Number of relations. If there is more than one, we should display a tabbed list.
+$relationsCount = count($relations);
 
 $has_assoc = 0;
 $active = 'class="active"';
@@ -281,7 +283,7 @@ $lis = '';
 $divs = '';
 foreach ($relations as $alias => $details):
 	// Copying the original fields list
-	$originalFieldList=$details['fields'];
+	$originalFieldList = $details['fields'];
 	// Updating details infos
 	$details = $this->s_prepareSchemaRelatedFields($alias, $details);
 	// CamelCasing controller name
@@ -291,10 +293,56 @@ foreach ($relations as $alias => $details):
 
 		$otherSingularVar = Inflector::variable($alias);
 		$otherPluralHumanName = Inflector::humanize($details['controller']);
+
+		// Testing actions
+		if ($relatedDataHideActionsList === false):
+			if ($hasMany_hideActions == false):
+				$actionsButton = '';
+				$hasActions = 0;
+				$actions = array();
+				// "View" action
+				if ($this->canDo('view', null, $ccController)):
+					$hasActions += 1;
+					$actions[] = "<?php echo \$this->Html->Link('<i class=\"fa fa-eye\"></i> ' . __('View')," . $this->url('view', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('title'=>__('View'), 'escape'=> false));?>";
+				endif;
+				// "Edit" action
+				if ($this->canDo('edit', null, $ccController)):
+					$hasActions += 1;
+					$actions.="<?php echo \$this->Html->Link('<i class=\"fa fa-pencil\"></i> ' . __('Edit')," . $this->url('edit', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('title'=>__('Edit'), 'escape'=> false));?>";
+				endif;
+				// "Delete" action
+				if ($this->canDo('delete', null, $ccController)):
+					$hasActions += 1;
+					$actions.= "<?php echo \$this->Form->postLink('<i class=\"fa fa-trash-o\"></i> ' .__('Delete'), " . $this->url('delete', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('confirm'=>__('Are you sure you want to delete %s?', \${$otherSingularVar}['{$details['primaryKey']}']), 'title'=>__('Delete'), 'escape'=>false)); ?>";
+				endif;
+
+				if ($hasActions > 1):
+					$actionsButton.= "\t\t\t\t\t\t\t<div class=\"btn-group\">\n";
+					$actionsButton.= "\t\t\t\t\t\t\t\t<a class=\"btn btn-xs btn-default dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">\n";
+					$actionsButton.= "\t\t\t\t\t\t\t\t\t<i class=\"fa fa-cog\"></i>\n";
+					$actionsButton.= "\t\t\t\t\t\t\t\t\t<span class=\"caret\"></span>\n";
+					$actionsButton.= "\t\t\t\t\t\t\t\t</a>\n";
+					$actionsButton.= "\t\t\t\t\t\t\t\t<ul class=\"dropdown-menu\">\n";
+					foreach ($actions as $action) {
+						$actionsButton.="\t\t\t\t\t\t\t\t\t<li>$action</li>\n";
+					}
+					$divs.= $actions;
+					$actionsButton.= "\t\t\t\t\t\t\t\t</ul>\n";
+					$actionsButton.= "\t\t\t\t\t\t\t</div>\n";
+				else:
+					$actionsButton.="\t\t\t\t\t\t\t<div class=\"btn btn-xs btn-default\">$actions[0]</div>";
+				endif;
+			endif;
+		endif;
+
 		// Tabs headers
-		$lis.="\t\t\t<li $active>\n\t\t\t\t<a href=\"#tab{$details['controller']}\" data-toggle=\"tab\"><?php echo " . $this->iString($otherPluralHumanName) . "; ?> <span class=\"badge\"><?php echo count(\${$singularVar}['{$alias}']); ?></span></a>\n\t\t\t</li>\n";
-		// Tabs contents
-		$divs.="\t\t<div class=\"tab-pane $inline_active\" id=\"tab{$details['controller']}\">\n";
+		if ($relationsCount > 1):
+			$lis.="\t\t\t<li $active>\n\t\t\t\t<a href=\"#tab{$details['controller']}\" data-toggle=\"tab\"><?php echo " . $this->iString($otherPluralHumanName) . "; ?> <span class=\"badge\"><?php echo count(\${$singularVar}['{$alias}']); ?></span></a>\n\t\t\t</li>\n";
+			// Tabs contents
+			$divs.="\t\t<div class=\"tab-pane $inline_active\" id=\"tab{$details['controller']}\">\n";
+		else:
+			$lis.= "<h2><?php echo " . $this->iString('Related ' . $otherPluralHumanName) . "?></h2>\n";
+		endif;
 
 		// Table data
 		$divs.= "\t\t\t<?php if (!empty(\${$singularVar}['{$alias}'])): ?>\n";
@@ -322,49 +370,12 @@ foreach ($relations as $alias => $details):
 		$divs.= "\t\t\t\t<?php\n";
 		$divs.= "\t\t\t\tforeach (\${$singularVar}['{$alias}'] as \${$otherSingularVar}): ?>\n";
 		$divs.= "\t\t\t\t\t<tr>\n";
-
-		// Testing actions
-		if ($relatedDataHideActionsList === false):
-			if ($hasMany_hideActions == false):
-				$hasActions = 0;
-				$actions = '';
-				$disabled = '';
-				// "View" action
-				if ($this->canDo('view', null, $ccController)):
-					$hasActions = 1;
-					$actions.= "\t\t\t\t\t\t\t\t\t<li><?php echo \$this->Html->Link('<i class=\"fa fa-eye\"></i> ' . __('View')," . $this->url('view', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('title'=>__('View'), 'escape'=> false));?></li>\n";
-				endif;
-				// "Edit" action
-				if ($this->canDo('edit', null, $ccController)):
-					$hasActions = 1;
-					$actions.="\t\t\t\t\t\t\t\t\t<li><?php echo \$this->Html->Link('<i class=\"fa fa-pencil\"></i> ' . __('Edit')," . $this->url('edit', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('title'=>__('Edit'), 'escape'=> false));?></li>\n";
-				endif;
-				// "Delete" action
-				if ($this->canDo('delete', null, $ccController)):
-					$hasActions = 1;
-					$actions.= "\t\t\t\t\t\t\t\t\t<li><?php echo \$this->Form->postLink('<i class=\"fa fa-trash-o\"></i> ' .__('Delete'), " . $this->url('delete', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('confirm'=>__('Are you sure you want to delete %s?', \${$otherSingularVar}['{$details['primaryKey']}']), 'title'=>__('Delete'), 'escape'=>false)); ?></li>\n";
-				endif;
-
-				// Disabled button state
-				if ($hasActions == 0):
-					$disabled = ' disabled';
-				endif;
-				$divs.= "\t\t\t\t\t\t<td class=\"actions\">\n";
-				$divs.= "\t\t\t\t\t\t\t<div class=\"btn-group\">\n";
-				$divs.= "\t\t\t\t\t\t\t\t<a class=\"btn btn-xs btn-default dropdown-toggle$disabled\" data-toggle=\"dropdown\" href=\"#\">\n";
-				$divs.= "\t\t\t\t\t\t\t\t\t<i class=\"fa fa-cog\"></i>\n";
-				$divs.= "\t\t\t\t\t\t\t\t\t<span class=\"caret\"></span>\n";
-				$divs.= "\t\t\t\t\t\t\t\t</a>\n";
-				$divs.= "\t\t\t\t\t\t\t\t<ul class=\"dropdown-menu\">\n";
-				$divs.= $actions;
-				$divs.= "\t\t\t\t\t\t\t\t</ul>\n";
-				$divs.= "\t\t\t\t\t\t\t</div>\n";
-				$divs.= "\t\t\t\t\t\t</td>\n";
-			endif;
-		endif;
+		$divs.= "\t\t\t\t\t\t<td class=\"actions\">\n";
+		$divs.= $actionsButton;
+		$divs.= "\t\t\t\t\t\t</td>\n";
 		foreach ($details['fields'] as $field):
-			$fieldContent=$this->v_prepareRelatedField($field, $details, $originalFieldList);
-				$divs.= "\t\t\t\t\t\t<td>\n{$fieldContent['displayString']}\n</td>\n";
+			$fieldContent = $this->v_prepareRelatedField($field, $details, $originalFieldList);
+			$divs.= "\t\t\t\t\t\t<td>\n{$fieldContent['displayString']}\n</td>\n";
 		endforeach;
 		$divs.= "\t\t\t\t\t</tr>\n";
 		$divs.= "\t\t\t\t<?php endforeach; ?>\n";
@@ -382,13 +393,18 @@ endforeach;
  * Display associations
  */
 if ($has_assoc > 0):
-	echo "\t<h2><?php echo __('Related data'); ?></h2>\n";
-	echo "\t\t<ul class=\"nav nav-tabs\">\n";
-	echo $lis;
-	echo "\t\t</ul>\n";
-	echo "\t<div class=\"tab-content\">\n";
-	echo $divs;
-	echo "\t</div>\n";
+	if ($relationsCount > 1):
+		echo "\t<h2><?php echo __('Related data'); ?></h2>\n";
+		echo "\t\t<ul class=\"nav nav-tabs\">\n";
+		echo $lis;
+		echo "\t\t</ul>\n";
+		echo "\t<div class=\"tab-content\">\n";
+		echo $divs;
+		echo "\t</div>\n";
+	else:
+		echo $lis;
+		echo $divs;
+	endif;
 endif;
 ?>
 </div>

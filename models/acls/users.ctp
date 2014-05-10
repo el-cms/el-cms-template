@@ -24,16 +24,16 @@
  */
 
 // User status field
-$userStatusField = $this->Sbc->getConfig('theme.acls.userStatusField');
+$userStatusField = $this->Sbc->getConfig('theme.components.Auth.userStatusField');
 // User model
-$userModel = $this->Sbc->getConfig('theme.acls.userModel');
-$userModelPK = $this->Sbc->getConfig('theme.acls.userModelPK');
+$userModel = $this->Sbc->getConfig('theme.components.Auth.userModel');
+$userModelPK = $this->Sbc->getConfig('theme.components.Auth.userModelPK');
 // Password field
-$passField = $this->Sbc->getConfig('theme.acls.userPassField');
+$passField = $this->Sbc->getConfig('theme.components.Auth.userPassField');
 // Role Model
-$roleModel = $this->Sbc->getConfig('theme.acls.roleModel');
+$roleModel = $this->Sbc->getConfig('theme.components.Auth.roleModel');
 // Role PK
-$roleModelPK = $this->Sbc->getConfig('theme.acls.roleModelPK');
+$roleModelPK = $this->Sbc->getConfig('theme.components.Auth.roleModelPK');
 
 /* ----------------------------------------------------------------------------
  *
@@ -41,11 +41,6 @@ $roleModelPK = $this->Sbc->getConfig('theme.acls.roleModelPK');
  *
  * --------------------------------------------------------------------------*/
 ?>
-	/**
-	 * <?php echo $name?> acts as requester for ACLs
-	 * @var array
-	 */
-	public $actsAs = array('Acl' => array('type' => 'requester'));
 
 	/**
 	 * Hash passwords before save

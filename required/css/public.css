@@ -6798,7 +6798,7 @@ Import all the files from font-awesome
 }
 /*------------------------------------------------------------------------------
 
-Import all the files from datetime JS plugin
+Custom plugins themes
 
 /*----------------------------------------------------------------------------*/
 /*!
@@ -7240,12 +7240,19 @@ Theme modifications
   box-shadow: 2px 0px 2px 1px #222222;
   background-color: #5cb85c;
 }
+h2.inline {
+  display: inline-block;
+  margin: 3px;
+}
+.header-content {
+  margin-left: 15px;
+}
 /*
  * Plugins containers
  */
 .container-blog,
 .container-gallery,
-.container-likes,
+.container-notes,
 .container-links,
 .container-other,
 .container-projects {
@@ -7276,15 +7283,15 @@ Theme modifications
   border-color: #06a2cb;
   background-color: #3ed2f9;
 }
-.container-likes {
+.container-notes {
   border: 3px solid #218559;
   -webkit-box-shadow: 0px 0px 2px 1px #0d3322;
   box-shadow: 0px 0px 2px 1px #0d3322;
 }
-.container-likes .toolbar {
+.container-notes .toolbar {
   border-color: #218559;
 }
-.container-likes .toolbar .btn-default {
+.container-notes .toolbar .btn-default {
   border-color: #218559;
   background-color: #3dcf8f;
 }
@@ -7345,6 +7352,9 @@ Theme modifications
 .article-list .article-list-header,
 .article-list .article-list-footer {
   padding: 5px;
+}
+.article-list .article-list-footer {
+  font-size: 85%;
 }
 .article-list .article-list-content {
   border-top: 1px solid #ede9e1;

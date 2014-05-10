@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Menu switch used if theme.useSFW is true.
+ * Menu switch used if theme.sfw.useSFW is true.
  *
  * This switch will display or hide NSFW content. It's included in some menus.
  *
@@ -19,7 +19,7 @@
  */
 
 // Use of SWF states in items
-$useSFW = $this->Sbc->getConfig('theme.useSFW');
+$useSFW = $this->Sbc->getConfig('theme.sfw.useSFW');
 
 if ($useSFW):
 		?>

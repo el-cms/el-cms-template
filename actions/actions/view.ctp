@@ -23,7 +23,7 @@
  *
  * Options
  *
- * --------------------------------------------------------------------------*/
+ * -------------------------------------------------------------------------- */
 // Include common options
 include 'common/common_options.ctp';
 
@@ -33,18 +33,29 @@ include 'common/common_options.ctp';
 // Default recursive find
 $recursiveDepth = (!isset($options['recursiveDepth'])) ? 0 : $options['recursiveDepth'];
 
+// Hidden associations
+if(!isset($hiddenAssociations) || !is_array($hiddenAssociations)){
+	$hiddenAssociations=array();
+}
+
 // Conditions (for paginate)
 $conditions = (!isset($options['conditions'])) ? array() : $options['conditions'];
 
+// Containable conditions:
+$containsConditions = (!isset($options['containConditions'])) ? array() : $options['containConditions'];
+$contain = $this->c_findContains($modelObj, array(
+		'conditions' => $containsConditions,
+		'hiddenAssociations'=>$hiddenAssociations,
+		));
 /* ----------------------------------------------------------------------------
  *
  * Action
  *
- * --------------------------------------------------------------------------*/
+ * -------------------------------------------------------------------------- */
 ?>
 
 /**
-* <?php echo $admin . $a ?> method from snippet <?php echo __FILE__ ?>
+* <?php echo $admin . $a ?> method from snippet <?php echo __FILE__ ?>.
 *
 * @throws NotFoundException
 * @param string $id
@@ -56,28 +67,34 @@ public function <?php echo $admin . $a ?>($id = null) {
 	include $themePath . 'actions/snippets/layout_support.ctp';
 
 	// Fields
-	$findFields='';
+	$findFields = '';
 	// Conditions
 	$findConditions = '';
 	if (count($conditions) > 0):
 		foreach ($conditions as $k => $v):
-		$findConditions.="'$k' => " .$this->c_indexConditions($v) . ",\n";
+			$findConditions.="'$k' => " . $this->c_indexConditions($v) . ",\n";
 		endforeach;
 	endif;
+
+	// "Contain" section:
+	if(count($contain)>0){
+		$containString="'contain' => ".var_export($contain, true).',';
+	}
 ?>
 	$options = array(
 		'conditions' => array(
 			'<?php echo $currentModelName; ?>.' . $this-><?php echo $currentModelName; ?>->primaryKey => $id,
-			<?php echo $findConditions?>
+			<?php echo $findConditions ?>
 			),
-		<?php echo $findFields;?>);
+		<?php echo $containString; ?>
+		<?php echo $findFields; ?>);
 	$<?php echo lcfirst($currentModelName); ?>Data = $this-><?php echo $currentModelName; ?>->find('first', $options);
 	if (empty($<?php echo lcfirst($currentModelName); ?>Data)) {
 		throw new NotFoundException(<?php echo $this->iString('Invalid ' . strtolower($singularHumanName)) ?>);
 	}
 	$this->set('<?php echo $singularName; ?>', $<?php echo lcfirst($currentModelName); ?>Data);
 	<?php
-	$fieldToDisplay=(!empty($modelObj->displayField)) ? 'displayField' : 'primaryKey';
+	$fieldToDisplay = (!empty($modelObj->displayField)) ? 'displayField' : 'primaryKey';
 	?>
 	$this->set('title_for_layout', <?php echo $this->iString(ucfirst(Inflector::singularize(Inflector::humanize(Inflector::underscore($currentModelName)))) . ': %s', '$' . lcfirst($currentModelName) . "Data['$currentModelName'][\$this->${currentModelName}->$fieldToDisplay]"); ?>);
 }

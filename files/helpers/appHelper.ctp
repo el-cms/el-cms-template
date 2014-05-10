@@ -70,7 +70,7 @@ class AppHelper extends Helper {
 	}
 
 	<?php
-	if($this->Sbc->getConfig('theme.useGravatar')):
+	if($this->Sbc->getConfig('theme.gravatar.useGravatar')):
 		?>
 	/**
 	 * From Gravatar Help:

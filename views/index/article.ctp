@@ -109,7 +109,6 @@ if (!isset($contentField)) {
 	// If no content, view will be compact
 	$listIsCompact = true;
 } else {
-	// support for sfw states
 	$contentContent = $this->v_prepareField($contentField, $schema[$contentField]);
 }
 
@@ -119,6 +118,7 @@ if (!isset($cDateField)) {
 	$cDateContent = null;
 } else {
 	$cDateContent = $this->v_prepareField($cDateField, $schema[$cDateField]);
+	$cDateContent = $this->v_icon('calendar').$cDateContent['displayString'];
 }
 
 // Modification date field. Can be empty/null.
@@ -127,6 +127,7 @@ if (!isset($mDateField)) {
 	$mDateContent = null;
 } else {
 	$mDateContent = $this->v_prepareField($mDateField, $schema[$mDateField]);
+	$mDateContent = $this->v_icon('calendar').$mDateContent['displayString'];
 }
 // Category field. Can be empty/null.
 if (!isset($catField)) {
@@ -140,6 +141,7 @@ if (!isset($catField)) {
 	}else{
 		$catContent=$this->v_prepareField($catField, $schema[$catField]);
 	}
+	$catContent=$catContent['displayString'];
 }
 // License field. Can be empty/null.
 if (!isset($licenseField)) {
@@ -153,6 +155,7 @@ if (!isset($licenseField)) {
 	}else{
 		$licenseContent=$this->v_prepareField($licenseField, $schema[$licenseField]);
 	}
+	$licenseContent = $this->v_icon('tag').$licenseContent['displayString'];
 }
 // Authorfield. Can be empty/null.
 if (!isset($authorField)) {
@@ -166,6 +169,7 @@ if (!isset($authorField)) {
 	}else{
 		$authorContent=$this->v_prepareField($authorField, $schema[$authorField]);
 	}
+	$authorContent=$this->v_icon('user').$authorContent['displayString'];
 }
 
 /* ----------------------------------------------------------------------------
@@ -238,9 +242,9 @@ echo "?>";
 			// sfw
 			echo $sfwContent['displayString'];
 			echo $titleContent['displayString'];
-			echo $catContent['displayString'];
-			echo $cDateContent['displayString'];
-			echo $authorContent['displayString'];
+			echo $catContent;
+			echo $cDateContent;
+			echo $authorContent;
 
 			//Actions
 			if ($haveActions == true && $hideActionsList == false):
@@ -249,11 +253,8 @@ echo "?>";
 		else:
 			// Header
 			echo "<div class=\"article-list-header\">\n";
-			echo implode("\n // ", array_filter(array(
-					$sfwContent['displayString'],
-					$titleContent['displayString'],
-					$catContent['displayString']
-							)));
+			echo "<h2 class=\"inline\">{$sfwContent['displayString']} {$titleContent['displayString']}</h2>";
+			echo "<span class=\"header-content\">$catContent</span>";
 
 			// Actions
 			if ($haveActions == true && $hideActionsList == false):
@@ -267,11 +268,11 @@ echo "?>";
 			echo "\t</div>\n\n";
 
 			echo "\t<div class=\"article-list-footer\">\n";
-				echo implode("\n // ", array_filter(array(
-						$authorContent['displayString'],
-						$cDateContent['displayString'],
-						$mDateContent['displayString'],
-						$licenseContent['displayString']
+				echo implode("\n&nbsp;-&nbsp;", array_filter(array(
+						$authorContent,
+						$cDateContent,
+						$mDateContent,
+						$licenseContent
 								)));
 			echo "\t</div>\n";
 		endif;
