@@ -121,6 +121,11 @@ theme:
       roleModel: Group
       ## Role primary key
       roleModelPK: id
+      ## Primary key name in user model (leave blank if you follow CakePHP conventions)
+      roleModelPKName:
+      ## Roles ids always allowed to do everything (superUsers)
+      superRoleIDs:
+        1
 
       ## Users model (usually User)
       ## Note that the register action must be in the controller corresponding to
@@ -128,6 +133,9 @@ theme:
       userModel: User
       ## Users primary key
       userModelPK: id
+      ## User ids always allowed to do everything (superUsers)
+      superUserIDs:
+        1
 
       ## Defines if the user can choose his role during registration or on account edit.
       userCanChooseRole: false
@@ -1320,132 +1328,159 @@ plugins:
   ## --------------------------------------------------------------------------
   ##
   Acl:
+    haveBootstrap: true
+
     options:
       icon: shield
-    path: plugins
-    generate: false
+      useAjax: true
+
+    path: Plugin
+
+    generate: true
+
+    ##
+    ## Generated files
+    files:
+      bootstrap:
+        targetPath: Config::bootstrap.php
+        template: Acl::bootstrap
+
+    ##
+    ## Required files
+    required:
+      ## The AclRouter lib
+      Acl-router:
+        type: file
+        source: libs::Acl::AclRouter.php
+        target: Lib::AclRouter.php
+
     parts:
-      Acos:
+      ##
+      ## Actions management (Acos)
+      Actions:
         haveModel: false
         controller:
-          name: Acos
           actions:
+            ## All default actions removed
             public:
               index:
+                blackListed: true
+              view:
+                blackListed: true
+            user:
+
+              index:
+                blackListed: true
+              view:
                 blackListed: true
               add:
                 blackListed: true
               edit:
                 blackListed: true
               delete:
+                blackListed: true
+            admin:
+              ## All default actions removed (except index)
+              view:
+                blackListed: true
+              edit:
+                blackListed: true
+              add:
+                blackListed: true
+              delete:
+                blackListed: true
+              ## Actions from controller:
+              ## We "trick" the system: the template used for index contains all the actions.
+              ## All the other actions points to an empty template.
+              index:
+                template: Acl::actions
+                haveView: false
+              build_acl:
+                template: empty_action
+                haveView: false
+              empty_acos:
+                template: empty_action
+                haveView: false
+              prune_acos:
+                template: empty_action
+                haveView: false
+              synchronize:
+                template: empty_action
+                haveView: false
+
+      ##
+      ## Permission management (Aros)
+      Permissions:
+        haveModel: false
+        controller:
+          actions:
+            ## All default actions removed
+            public:
+              index:
                 blackListed: true
               view:
                 blackListed: true
             user:
               index:
                 blackListed: true
+              view:
+                blackListed: true
               add:
                 blackListed: true
               edit:
                 blackListed: true
               delete:
                 blackListed: true
-              view:
-                blackListed: true
+            ## All default actions removed (except index)
             admin:
+              view:
+                blackListed: true
+              edit:
+                blackListed: true
+              add:
+                blackListed: true
+              delete:
+                blackListed: true
+              ## Actions from controller:
+              ## We "trick" the system: the template used for index contains all the actions.
+              ## All the other actions points to an empty template.
               index:
-                blackListed: true
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
-              build_acl: []
-              empty_acos: []
-              prune_acos: []
-              synchronize: []
-      Aros:
-        options:
-          icon: group
-        haveModel: false
-        controller:
-          name: Acos
-          actions:
-            public:
-              index:
-                blackListed: true
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
-            user:
-              index:
-                blackListed: true
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
-            admin:
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
-              check: []
-              empty_permissions: []
-              role_permissions: []
-              update_user_role: []
-              users: []
-      Acl:
-        haveModel: false
-        controller:
-          name: Acl
-          actions:
-            public:
-              index:
-                blackListed: true
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
-            user:
-              index:
-                blackListed: true
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
-            admin:
-              add:
-                blackListed: true
-              edit:
-                blackListed: true
-              delete:
-                blackListed: true
-              view:
-                blackListed: true
+                template: Acl::permissions
+              ajax_role_permissions:
+                template: empty_action
+              check:
+                template: empty_action
+              clear_user_specific_permissions:
+                template: empty_action
+              deny_all_controllers:
+                template: empty_action
+              deny_role_permission:
+                template: empty_action
+              deny_user_permission:
+                template: empty_action
+              empty_permissions:
+                template: empty_action
+              get_role_controller_permission:
+                template: empty_action
+              get_user_controller_permission:
+                template: empty_action
+              grant_all_controllers:
+                template: empty_action
+              grant_role_permission:
+                template: empty_action
+              grant_user_permission:
+                template: empty_action
+              role_permissions:
+                template: empty_action
+              update_user_role:
+                template: empty_action
+              user_permissions:
+                template: empty_action
+              users:
+                template: empty_action
+
+  ##
+  ## DebugKit plugin
   DebugKit:
     generate: false
     haveBootstrap: false
