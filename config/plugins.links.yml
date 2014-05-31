@@ -1,0 +1,45 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##      Links plugin.
+##
+##
+##-----------------------------------------------------------------------
+---
+plugins:
+  ## --------------------------------------------------------------------------
+  ##  Links plugin
+  ## ----------------------------
+  ##  Links to friends, stuff
+  ## --------------------------------------------------------------------------
+  ##
+  Links:
+    options:
+      icon: link
+    parts:
+      ## The list
+      Links:
+        controller:
+          actions:
+            user:
+              index:
+                options:
+                  conditions:
+                    user_id: %self%
+        options:
+          icon: link
+      ## Link categories
+      LinkCategories:
+        options:
+          icon: list-ul

@@ -1,0 +1,46 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##      Misc plugin.
+##
+##
+##-----------------------------------------------------------------------
+---
+plugins:
+  ## --------------------------------------------------------------------------
+  ##  Misc plugin
+  ## ----------------------------
+  ##  Everything else
+  ## --------------------------------------------------------------------------
+  ##
+  Misc:
+    options:
+      icon: cogs
+    parts:
+      ## Things reported by users
+      Reports:
+        options:
+          icon: flag
+      ## Possible reasons:
+      ReportReasons:
+      ## I don't remember this one
+      Pages:
+        options:
+          icon: file-text
+      ## Licenses used
+      Licenses:
+        model:
+          displayField: name
+        options:
+          icon: circle-o

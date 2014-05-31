@@ -1,0 +1,83 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##      Projects plugin.
+##
+##
+##-----------------------------------------------------------------------
+---
+plugins:
+  ## --------------------------------------------------------------------------
+  ##  Projects plugin
+  ## ----------------------------
+  ##  Manage some projects
+  ## --------------------------------------------------------------------------
+  ##
+  Projects:
+    options:
+      icon: puzzle-piece
+    parts:
+      ## List of projects
+      Projects:
+        controller:
+          actions:
+            user:
+              index:
+                options:
+                  conditions:
+                    user_id: %self%
+              edit:
+                options:
+                  conditions:
+                    user_id: %self%
+                  hiddenFields:
+                    user_id
+              add:
+                options:
+                  conditions:
+                    user_id: %self%
+                  hiddenFields:
+                    user_id
+        options:
+          icon: puzzle-piece
+      ## Notes, news about a project
+      ProjectNotes:
+        controller:
+          actions:
+            user:
+              index:
+                options:
+                  conditions:
+                    user_id: %self%
+              edit:
+                options:
+                  conditions:
+                    user_id: %self%
+                  hiddenFields:
+                    user_id
+              add:
+                options:
+                  conditions:
+                    user_id: %self%
+                  hiddenFields:
+                    user_id
+        options:
+          icon: pencil
+      ## Project state (dev/stable/...)
+      ProjectStates:
+        options:
+          icon: tasks
+        controller:
+          options:
+            conditions: []

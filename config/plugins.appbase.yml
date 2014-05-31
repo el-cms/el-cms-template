@@ -1,0 +1,430 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##      Appbase plugin.
+##
+##
+##-----------------------------------------------------------------------
+---
+plugins:
+
+  ## --------------------------------------------------------------------------
+  ##  "appBase" is not a plugin!
+  ##    Everything defined here will be baked in "app/".
+  ##  This section must be defined, even if you keep it empty.
+  ## ----------------------------
+  ##  Contains: Users, Groups
+  ## --------------------------------------------------------------------------
+  ## This is a special "plugin": it uses the <cake>/app/ folder as a plugin. All
+  ## the models, controllers,... will be created relatively to app/
+  ## If, for a reason you need to create a real plugin named 'appBase', change the
+  ## 'general.appBase' value of this file for something else, and put its name here too.
+  ##
+  ## This is the "plugin" in wich you should define your app wide
+  ## menus/files/required things
+  ##
+  AppBase:
+    options:
+      icon: user
+    displayName: System
+    ## Plugin parts
+    ## Be carefull when naming empty parts: as the part name is used for empty
+    ## models definition or empty controllers definition, you should use the Cake
+    ## naming convention : Users for table users, WaitingOrders for table
+    ## waiting_orders,...
+    ##
+    ## But you can name it as you want when the models/controllers definitions
+    ## have the name set.
+    parts:
+
+      ##
+      ## Users management. Put here as I use the Alaxos' Acl plugin, which
+      ## doesn't work if users and groups are inside a plugin
+      Users:
+        model:
+          displayField: username
+          snippets:
+            acls:
+              path: acls::users
+          options:
+            actsAs:
+              Acl:
+                type: requester
+
+        controller:
+          actions:
+            ## Public actions
+            public:
+              ## "Login" action
+              login:
+                template: users::login
+                options:
+                  layout: login
+                view:
+                  template: users::login
+
+#              register:
+#                template: users::register
+#                view:
+#                  template: users::register
+              logout:
+                template: users::logout
+              view:
+                options:
+                  containConditions:
+                    Post:
+                      %noAnon%:
+                      published: 1
+                    Gallery:
+                      %noAnon%
+                    GalleryItem:
+                      %noAnon%
+                    Link:
+                      %NoAnon%
+                    Note:
+                      %noAnon%
+              index:
+                blackListed: true
+            user:
+              index:
+                view:
+                  options:
+                    hiddenFields:
+                      bio
+                      see_nsfw
+                      password
+                      modified
+                      website
+                      realname
+                      email
+                      nbposts
+                      status
+              add:
+                blackListed: true
+              delete:
+                blackListed: true
+              edit:
+                blackListed: true
+              ## Edit own profile
+              profile:
+                options:
+                  conditions:
+                    id: %self%
+              ## Dashboard
+              dashboard:
+                options:
+                  conditions:
+                    id: %self%
+              ## Close the account
+              close:
+
+            admin:
+              add:
+                view:
+                  options:
+                    hiddenFields:
+                      nbposts
+                      bio
+              index:
+                view:
+                  options:
+                    hiddenFields:
+                      bio
+                      see_nsfw
+                      password
+                      modified
+                      website
+                      realname
+        options:
+          icon: user
+          ## Options are part-wide, as needed by models/controllers and views
+          ## Name of the pass field in DB and forms
+          passField: password
+          ## Name of the pass confirmation in forms
+          passCheckField: password2
+
+      ##
+      ## Groups management
+      Groups:
+        controller:
+          actions:
+            user:
+              add:
+                blackListed: true
+              edit:
+                blackListed: true
+              delete:
+                blackListed: true
+        options:
+          icon: group
+        model:
+          snippets:
+            acls:
+              path: acls::roles
+          options:
+            actsAs:
+              Acl:
+                type: requester
+    ##
+    ## Menus for AppBase
+    ##
+    menus:
+      ## ---
+      ## Admin menu
+      ## ---
+      admin_menu:
+        template: menu
+        targetPath: Elements::menus::admin.ctp
+        options:
+          prefixes:
+            admin
+          hiddenControllerActions:
+            Posts:
+              add
+          haveUserMenu: true
+      ## ---
+      ## User menu
+      ## ---
+      user_menu:
+        template: menu
+        targetPath: Elements::menus::user.ctp
+        options:
+          prefixes:
+            user
+          hiddenPlugins:
+            Acl
+            Misc
+          haveUserMenu: true
+      ## ---
+      ## Public menu
+      ## ---
+      public_menu:
+        generate: true
+        template: composed
+        targetPath: Elements::menus::public.ctp
+        options:
+          elements:
+            # Articles
+            Articles:
+              # type: cake URL
+              t: cakeUrl
+              # Plugin
+              p: Blog
+              # Controller
+              c: Posts
+              # Action
+              a: index
+              # Title
+            Files:
+              p: Gallery
+              c: Galleries
+              a: index
+              t: cakeUrl
+            Notes:
+              p: Notes
+              c: Notes
+              a: index
+              t: cakeUrl
+            Links:
+              p: Links
+              c: Links
+              a: index
+              t: cakeUrl
+            Projects:
+              p: Projects
+              c: Projects
+              a: index
+              t: cakeUrl
+            SFW:
+              t: sfwSwitch
+            Members:
+              t: userMenu
+              mustBeLoggedIn: true
+#            name:
+#              t: group
+#              icon:
+#              elements:
+#                cakeUrl:
+#                separator:
+#                  t: title
+#                url:
+#            otherName:
+#              t: url
+#              l: link
+
+    ##
+    ## Standalone Files
+    ##
+    files:
+      ##
+      ## Custom bootstrap
+      bootstrap:
+        targetPath: Config::bootstrap.php
+        template: bootstrap
+
+      ##
+      ## Layouts
+      layout_public:
+        targetPath: View::Layouts::default.ctp
+        template: layouts::default
+        options:
+          userLine: public
+          style: public
+          usePluginColors: true
+      layout_user:
+        targetPath: View::Layouts::user.ctp
+        template: layouts::default
+        options:
+          userLine: user
+          style: public
+          usePluginColors: true
+      layout_admin:
+        targetPath: View::Layouts::admin.ctp
+        template: layouts::default
+        options:
+          userLine: admin
+          style: admin
+          usePluginColors: true
+      layout_login:
+        targetPath: View::Layouts::login.ctp
+        template: layouts::login
+        options:
+          style: public
+      ##
+      ## Footer bar
+      footer:
+        targetPath: View::Elements::footer.ctp
+        template: elements::footer
+      ##
+      ## Language bar
+      lang-bar:
+        targetPath: View::Elements::lang-bar.ctp
+        template: elements::lang-bar
+
+      ##
+      ## AppController
+      AppController:
+        targetPath: Controller::AppController.php
+        template: appController
+      ##
+      ## AppHelper
+      AppHelper:
+        targetPath: View::Helper::AppHelper.php
+        template: helpers::appHelper
+      ##
+      ## Flash messages
+      ##
+      flash_error:
+        targetPath: View::Elements::flash_error.ctp
+        template: elements::flash_message
+        options:
+          alertClass: danger
+      flash_warning:
+        targetPath: View::Elements::flash_warning.ctp
+        template: elements::flash_message
+        options:
+          alertClass: warning
+      flash_info:
+        targetPath: View::Elements::flash_info.ctp
+        template: elements::flash_message
+        options:
+          alertClass: info
+      flash_succcess:
+        targetPath: View::Elements::flash_success.ctp
+        template: elements::flash_message
+        options:
+          alertClass: success
+    ##
+    ## Required files and folders
+    ##
+    required:
+      ## Helpers (may be empty)
+      Helpers:
+        type: folder
+        source: helpers
+        target: View::Helper
+        contentOnly: true
+
+      ##
+      ## CSS
+      css-admin:
+        type: file
+        ## Source
+        source: css::admin.css
+        ## Target folder
+        target: webroot::css::admin.css
+      css-public:
+        type: file
+        source: css::public.css
+        target: webroot::css::public.css
+
+      ##
+      ## Pages for pageController
+      Pages:
+        type: folder
+        source: pages
+        target: View::Pages
+
+      ##
+      ## Flag images
+      images-Flags:
+        type: folder
+        source: images::flags
+        target: webroot::img
+        ## Copy the source folder too
+        contentOnly: false
+
+      ##
+      ## CKeditor
+      js-ckEditor:
+        type: folder
+        source: js::ckeditor
+        target: webroot::js
+        contentOnly: false
+
+      ##
+      ## Datetime picker
+      js-datetimepicker:
+        type: file
+        source: js::datetime::js::bootstrap-datetimepicker.js
+        target: webroot::js::bootstrap-datetimepicker.js
+
+      ##
+      ## jQuery
+      js-jQuery:
+        type: file
+        source: js::jquery-1.10.2.min.js
+        target: webroot::js::jquery-1.10.2.min.js
+      ##
+      ## Bootstrap scripts
+      js-bootstrap:
+        type: file
+        source: css::twitter-bootstrap::dist::js::bootstrap.min.js
+        target: webroot::js::bootstrap.min.js
+
+      ##
+      ## Icons Font
+      fonts-awesome:
+        type: folder
+        source: css::font-awesome::fonts
+        target: webroot::fonts
+        contentOnly: true
+
+      ##
+      ## Image lib
+      lib-Image:
+        type: folder
+        source: libs::Image
+        target: Lib::Image
+        contentOnly: true

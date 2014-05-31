@@ -1,0 +1,98 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##      Gallery plugin configuration.
+##
+##
+##-----------------------------------------------------------------------
+---
+plugins:
+  ## --------------------------------------------------------------------------
+  ##  Gallery plugin
+  ## ----------------------------
+  ##  More a file explorer than an actual gallery
+  ## --------------------------------------------------------------------------
+  ##
+  Gallery:
+    options:
+      icon: picture-o
+    parts:
+      ## The galleries list
+      Galleries:
+        controller:
+          actions:
+            public:
+              index:
+                view:
+                  template: index::gallery
+                  options:
+                    titleField: name
+                    contentField: description
+                    authorField: user_id
+                    sfwField: sfw
+                    anonField: anon
+                    publicField: public
+              view:
+                view:
+                  template: view::gallery
+                  options:
+                    titleField: name
+                    contentField: description
+                    authorField: user_id
+                    sfwField: sfw
+                    publicField: public
+                    anonField: anon
+                    itemsModel: gallery_items
+
+                    itemTitle: name
+                    itemDescription:
+                    itemTarget: path
+                    itemSfw: sfw
+                    itemLicense: license_id
+                    itemAuthor: user_id
+            user:
+              index:
+                options:
+                  conditions:
+                    user_id: %self%
+        options:
+          icon: picture-o
+      ## An item in the gallery
+      GalleryItems:
+        options:
+          fileField:
+            type: image
+            name: file
+            allowedExts:
+              jpg
+              png
+              gif
+            path: img::uploads
+            imageMaxWidth: 900
+        options:
+          controller:
+            libraries:
+              Image: SimpleImage
+
+        controller:
+          actions:
+            user:
+              index:
+                options:
+                  conditions:
+                    user_id: %self%
+    ## ---
+    ## Required files for the gallery plugin
+    ## ---
+    required: []

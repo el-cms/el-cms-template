@@ -1,0 +1,183 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##      Theme section.
+##
+##
+##-----------------------------------------------------------------------
+
+---
+#--------------------------------------------------------------------------
+#
+# Global options for the theme
+# Here you can set things related to your template.
+#
+#--------------------------------------------------------------------------
+
+theme:
+  ## Helpers that must be enabled
+  helpers:
+    Form
+    Html
+
+  ## Components to enable.
+  ## If you want to disable a component but still keep its config, add a "useComponent: false"
+  ## option.
+  components:
+    debugKit:
+      # Default is true.
+      useComponent: false
+    Auth:
+      useComponent: true
+      ## Roles model (usually Group or Role)
+      roleModel: Group
+      ## Role primary key
+      roleModelPK: id
+      ## Primary key name in user model (leave blank if you follow CakePHP conventions)
+      roleModelPKName:
+      ## Roles ids always allowed to do everything (superUsers)
+      superRoleIDs:
+        1
+
+      ## Users model (usually User)
+      ## Note that the register action must be in the controller corresponding to
+      ## the model.
+      userModel: User
+      ## Users primary key
+      userModelPK: id
+      ## User ids always allowed to do everything (superUsers)
+      superUserIDs:
+        1
+
+      ## Defines if the user can choose his role during registration or on account edit.
+      userCanChooseRole: false
+      ## Default role Id (usually the id corresponding to an "user" role)
+      defaultRoleId: 2
+
+      ## Valid user status: condition for an user to log in. Keep empty if no condition
+      ## is required for login
+      validUserStatus: true
+      ## User status field
+      userStatusField: status
+      ## Auto approve new users
+      defaultUserStatus: 1
+
+      ## Field used for authentication
+      userNameField: email
+      ## Password field (usually "password")
+      userPassField: password
+
+      ## Action where the user will be redirected to after login. The action should
+      ## be in controller related to the userModel.
+      ## prefix::action or action only.
+      loginRedirect: user::dashboard
+      ## Action handling login
+      loginAction: login
+    Session:
+    Acl:
+
+  ## Default template have custom flash message elements. If you set this value to true,
+  ## flash messages will need them.
+  ## Look at the '<defaultTemplate>/files/elements/flash_message.ctp' file.
+  ## Define the different elements in a plugin's 'files' section (i.e.: 'appBase.files')
+  flashMessageElement: true
+
+  ## Custom layout options:
+  layout:
+    ## Use icons ?
+    useIcons: true
+    ## Icon pack
+    iconPack: fa
+    ## Default class for a form:
+    formClass: form-horizontal
+    ## Default class for a definition list (<dl>)
+    dlClass: dl-horizontal
+
+  ## Defines if each prefix have its own layout for rendered pages.
+  ## If so, don't forget to define them in the appBase.files section.
+  useLayoutsForPrefixes: true
+
+  ## Support for safe/nsfw content
+  sfw:
+    ## Defines if the system use a kind of Safe For Work limitations
+    useSFW: true
+
+    ## Field that describes an item as sfw:
+    field: sfw
+
+    ## Content of the sfw field that define it as safe
+    fieldUnSafeContent: 0
+
+    ## Content of the sfw field that define is as unsafe
+    fieldSafeContent: 1
+
+    ## Fields that may contain nsfw data:
+    dataFields:
+      image
+      file
+      text
+      excerpt
+      description
+      content
+      data
+      link
+
+  ## Support for anonymous content
+  anon:
+    ## Use anonymous data
+    useAnon: true
+
+    ## Field that describes an item as anonymous
+    field: anon
+
+    ## Fields that can compromise the user anonymity
+    dataFields:
+      email
+      pseudo
+      name
+      realname
+    ## foreign key linking the user to the item:
+    foreignKey: user_id
+    ## UserId for the anon user
+    foreignKeyDataReplacement: 2
+    ## Name of the anonymous user:
+    userName: Anonymous
+
+
+  ## languages available in app:
+  ## superBake default template have a support for different languages fields in DB.
+  ## i.e: title_eng and title_fra. If you enable language support below, you will
+  ## have to define the different languages used in your tables and in the controllers
+  ## corresponding to these fields, you should define the differents language fields in options.
+  language:
+    ## Content can be in different languages
+    useLanguages: true
+    ## Default language for empty content
+    fallback: fra
+    ## Languages available
+    available:
+      fra
+      eng
+    descriptions:
+      fra: Version française
+      eng: English version
+    ## Date formats for the different languages
+    dateFormats:
+      fra: d-m-Y \à H:i
+      eng: Y-m-d \a\t h:ia
+
+  ## Support for gravatars
+  gravatar:
+    ## Use Gravatar avatars ?
+    useGravatar: true

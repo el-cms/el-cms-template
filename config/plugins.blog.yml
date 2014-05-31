@@ -1,0 +1,120 @@
+##
+## File to use with superBake 0.x
+##
+## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
+## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
+## @link          http://experimentslabs.com Experiments Labs
+## @package       ELCMS.superBake.Configuration
+## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
+## @version       0.3
+##
+##-----------------------------------------------------------------------
+##
+## Configuration file for ExperimentsLabs
+## -------------------------
+##     Blog plugin configuration.
+##
+##
+##-----------------------------------------------------------------------
+---
+plugins:
+  ## --------------------------------------------------------------------------
+  ##  Blog plugin
+  ## ----------------------------
+  ##  Write stuff !
+  ## --------------------------------------------------------------------------
+  ##
+  Blog:
+    options:
+      icon: book
+    generate: true
+    parts:
+      ## Posts
+      Posts:
+        controller:
+          actions:
+            public:
+              view:
+                options:
+                  conditions:
+                    Post.published: 1
+                view:
+                  options:
+
+              index:
+                options:
+                  conditions:
+                    Post.published: 1
+                    Post.publication_date <=: %now%
+                view:
+                  template: index::article
+                  options:
+                    ## unsortable fields:
+#                    unSortableFields:
+#                      text
+                    ## Title
+                    titleField: title
+                    ## Content
+                    contentField: excerpt
+                    ## Creation date
+                    cDateField: created
+                    ## Modification date
+                    #mDateField:
+                    ## Category
+                    catField: post_category_id
+                    ## Licensefield
+                    licenseField: license_id
+                    ## Author:
+                    authorField: user_id
+                    # Have a Safe for Work field
+                    sfwField: sfw
+                    # Have an Anon field
+                    anonField: anon
+            user:
+              index:
+                options:
+                  conditions:
+                    user_id: %self%
+                view:
+                  options:
+                    conditions:
+                      user_id: %self%
+                    hiddenFields:
+                      text
+              add:
+                options:
+                  conditions:
+                    user_id: %self%
+                  hiddenAssociations:
+                    User
+            admin:
+
+        options:
+          icon: book
+      ## Post categories
+      PostCategories:
+        options:
+          icon: list-ul
+        controller:
+          actions:
+            public:
+              view:
+                options:
+                  containConditions:
+                    Post:
+                      published: 1
+                view:
+                  options:
+                    assoc_hiddenModelFields:
+                      Posts:
+                        created
+                        modified
+                        anon
+                        id
+                        license_id
+                        post_category_id
+                        text_fra
+                        text_eng
+                        published
+                        user_id
+                        sfw
