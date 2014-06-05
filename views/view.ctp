@@ -194,7 +194,7 @@ endif;
 	<dl class="dl-horizontal">
 		<?php
 		foreach ($regularFields as $field):
-			echo "\t\t<dt><?php {$field['field']}; ?></dt>\n";
+			echo "\t\t<dt><?php {$field['field']} ?></dt>\n";
 			echo "\t\t<dd>{$field['content']}</dd>\n";
 		endforeach;
 		?>
@@ -308,12 +308,12 @@ foreach ($relations as $alias => $details):
 				// "Edit" action
 				if ($this->canDo('edit', null, $ccController)):
 					$hasActions += 1;
-					$actions.="<?php echo \$this->Html->Link('<i class=\"fa fa-pencil\"></i> ' . __('Edit')," . $this->url('edit', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('title'=>__('Edit'), 'escape'=> false));?>";
+					$actions[]="<?php echo \$this->Html->Link('<i class=\"fa fa-pencil\"></i> ' . __('Edit')," . $this->url('edit', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('title'=>__('Edit'), 'escape'=> false));?>";
 				endif;
 				// "Delete" action
 				if ($this->canDo('delete', null, $ccController)):
 					$hasActions += 1;
-					$actions.= "<?php echo \$this->Form->postLink('<i class=\"fa fa-trash-o\"></i> ' .__('Delete'), " . $this->url('delete', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('confirm'=>__('Are you sure you want to delete %s?', \${$otherSingularVar}['{$details['primaryKey']}']), 'title'=>__('Delete'), 'escape'=>false)); ?>";
+					$actions[]= "<?php echo \$this->Form->postLink('<i class=\"fa fa-trash-o\"></i> ' .__('Delete'), " . $this->url('delete', $details['controller'], null, "\${$otherSingularVar}['{$details['primaryKey']}']") . ", array('confirm'=>__('Are you sure you want to delete %s?', \${$otherSingularVar}['{$details['primaryKey']}']), 'title'=>__('Delete'), 'escape'=>false)); ?>";
 				endif;
 
 				if ($hasActions > 1):
@@ -326,7 +326,6 @@ foreach ($relations as $alias => $details):
 					foreach ($actions as $action) {
 						$actionsButton.="\t\t\t\t\t\t\t\t\t<li>$action</li>\n";
 					}
-					$divs.= $actions;
 					$actionsButton.= "\t\t\t\t\t\t\t\t</ul>\n";
 					$actionsButton.= "\t\t\t\t\t\t\t</div>\n";
 				else:

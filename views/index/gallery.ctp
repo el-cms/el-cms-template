@@ -116,6 +116,25 @@ if (!isset($publicField)){
 	$publicField= null;
 }
 
+// Category
+if(!isset($catContent)){
+	$catContent=null;
+}
+
+// Creation date
+if(!isset($cDateContent)){
+	$cDateContent=null;
+}
+
+// Modification date
+if(!isset($mDateContentt)){
+	$mDateContent=null;
+}
+
+// License
+if(!isset($licenseContent)){
+	$licenseContent=null;
+}
 /* ----------------------------------------------------------------------------
  * Prepare actions for each item
  */

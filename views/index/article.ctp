@@ -91,7 +91,7 @@ if (!isset($sfwField)) {
 	$sfwContent = null;
 } else {
 	// Content for the icon in view
-	$sfwContent=$this->v_prepareField($sfwField, $schema[$sfwField]);
+	$sfwContent = $this->v_prepareField($sfwField, $schema[$sfwField]);
 }
 
 // Title field. If empty, will use primary key
@@ -99,7 +99,11 @@ if (!isset($titleField)) {
 	$titleField = null;
 	$titleContent = null;
 } else {
-	$titleContent = $this->v_prepareField($titleField, $schema[$titleField]);
+	$url = null;
+	if ($this->canDo('view')) {
+		$url = "array('action' => 'view', \${$singularVar}['{$modelClass}']['{$primaryKey}'])";
+	}
+	$titleContent = $this->v_prepareField($titleField, $schema[$titleField], array('url'=>$url));
 }
 
 // Content field. If empty, the article list will be compact.
@@ -118,7 +122,7 @@ if (!isset($cDateField)) {
 	$cDateContent = null;
 } else {
 	$cDateContent = $this->v_prepareField($cDateField, $schema[$cDateField]);
-	$cDateContent = $this->v_icon('calendar').$cDateContent['displayString'];
+	$cDateContent = $this->v_icon('calendar') . $cDateContent['displayString'];
 }
 
 // Modification date field. Can be empty/null.
@@ -127,7 +131,7 @@ if (!isset($mDateField)) {
 	$mDateContent = null;
 } else {
 	$mDateContent = $this->v_prepareField($mDateField, $schema[$mDateField]);
-	$mDateContent = $this->v_icon('calendar').$mDateContent['displayString'];
+	$mDateContent = $this->v_icon('calendar') . $mDateContent['displayString'];
 }
 // Category field. Can be empty/null.
 if (!isset($catField)) {
@@ -135,13 +139,13 @@ if (!isset($catField)) {
 	$catContent = null;
 } else {
 	// Search if this key is in a foreign table
-	$fk=$this->v_isFieldKey($catField, $associations);
-	if(is_array($fk)){
-		$catContent=$this->v_prepareFieldForeignKey($catField, $fk, $schema[$catField]);
-	}else{
-		$catContent=$this->v_prepareField($catField, $schema[$catField]);
+	$fk = $this->v_isFieldKey($catField, $associations);
+	if (is_array($fk)) {
+		$catContent = $this->v_prepareFieldForeignKey($catField, $fk, $schema[$catField]);
+	} else {
+		$catContent = $this->v_prepareField($catField, $schema[$catField]);
 	}
-	$catContent=$catContent['displayString'];
+	$catContent = $catContent['displayString'];
 }
 // License field. Can be empty/null.
 if (!isset($licenseField)) {
@@ -149,13 +153,13 @@ if (!isset($licenseField)) {
 	$licenseContent = null;
 } else {
 	// Search if this key is in a foreign table
-	$fk=$this->v_isFieldKey($licenseField, $associations);
-	if(is_array($fk)){
-		$licenseContent=$this->v_prepareFieldForeignKey($licenseField, $fk, $schema[$licenseField]);
-	}else{
-		$licenseContent=$this->v_prepareField($licenseField, $schema[$licenseField]);
+	$fk = $this->v_isFieldKey($licenseField, $associations);
+	if (is_array($fk)) {
+		$licenseContent = $this->v_prepareFieldForeignKey($licenseField, $fk, $schema[$licenseField]);
+	} else {
+		$licenseContent = $this->v_prepareField($licenseField, $schema[$licenseField]);
 	}
-	$licenseContent = $this->v_icon('tag').$licenseContent['displayString'];
+	$licenseContent = $this->v_icon('tag') . $licenseContent['displayString'];
 }
 // Authorfield. Can be empty/null.
 if (!isset($authorField)) {
@@ -163,13 +167,13 @@ if (!isset($authorField)) {
 	$authorContent = null;
 } else {
 	// Search if this key is in a foreign table
-	$fk=$this->v_isFieldKey($authorField, $associations);
-	if(is_array($fk)){
-		$authorContent=$this->v_prepareFieldForeignKey($authorField, $fk, $schema[$authorField]);
-	}else{
-		$authorContent=$this->v_prepareField($authorField, $schema[$authorField]);
+	$fk = $this->v_isFieldKey($authorField, $associations);
+	if (is_array($fk)) {
+		$authorContent = $this->v_prepareFieldForeignKey($authorField, $fk, $schema[$authorField]);
+	} else {
+		$authorContent = $this->v_prepareField($authorField, $schema[$authorField]);
 	}
-	$authorContent=$this->v_icon('user').$authorContent['displayString'];
+	$authorContent = $this->v_icon('user') . $authorContent['displayString'];
 }
 
 /* ----------------------------------------------------------------------------
@@ -185,7 +189,7 @@ if ($this->canDo('view') == true || $this->canDo('edit') == true || $this->canDo
 $actionsButton = null;
 $actionsList = null;
 // View
-if ($this->canDo('view')) {
+if ($this->canDo('view') && empty($titleField)) {
 	$actionsList.="\t\t\techo \$this->Html->link(" . $this->iString('View') . ", array('action' => 'view', \${$singularVar}['{$modelClass}']['{$primaryKey}']), array('class'=>'btn btn-primary btn-xs'));\n";
 }
 // Edit
@@ -221,68 +225,68 @@ if ($noToolbar === false) {
  * List
  */
 echo "<?php\nforeach (\${$pluralVar} as \${$singularVar}):\n";
-if(!$this->s_haveSFW()):
+if (!$this->s_haveSFW()):
 	echo "\t// Verifying SFW state\n";
 	echo "\tif(\${$singularVar}['$modelClass']['$sfwField'] == 0 && \$seeNSFW == false):?>\n";
-		?>
-		<div class="article-list">
-			<div class="article-list-header text-muted">
-				<?php echo "<?php echo __('This content may not be safe for work and will not be displayed.');?>\n" ?>
-			</div>
+	?>
+	<div class="article-list">
+		<div class="article-list-header text-muted">
+			<?php echo "<?php echo __('This content may not be safe for work and will not be displayed.');?>\n" ?>
 		</div>
-		<?php
+	</div>
+	<?php
 	echo "<?php\n\telse:\n";
 endif;
 echo "?>";
-	?>
-	<div class="article-list">
-		<?php
-		// Everything on one line
-		if ($listIsCompact == true):
-			// sfw
-			echo $sfwContent['displayString'];
-			echo $titleContent['displayString'];
-			echo $catContent;
-			echo $cDateContent;
-			echo $authorContent;
-
-			//Actions
-			if ($haveActions == true && $hideActionsList == false):
-				echo $actionsButton;
-			endif;
-		else:
-			// Header
-			echo "<div class=\"article-list-header\">\n";
-			echo "<h2 class=\"inline\">{$sfwContent['displayString']} {$titleContent['displayString']}</h2>";
-			echo "<span class=\"header-content\">$catContent</span>";
-
-			// Actions
-			if ($haveActions == true && $hideActionsList == false):
-				echo $actionsButton;
-			endif;
-			// End of item headers
-			echo "\t</div>\n\n";
-
-			echo "\t<div class=\"article-list-content\">\n";
-			echo $contentContent['displayString'];
-			echo "\t</div>\n\n";
-
-			echo "\t<div class=\"article-list-footer\">\n";
-				echo implode("\n&nbsp;-&nbsp;", array_filter(array(
-						$authorContent,
-						$cDateContent,
-						$mDateContent,
-						$licenseContent
-								)));
-			echo "\t</div>\n";
-		endif;
-		?>
-	</div>
+?>
+<div class="article-list">
 	<?php
-	echo "<?php";
-	if(!$this->s_haveSFW()):
-		echo "\nendif;\n";
+	// Everything on one line
+	if ($listIsCompact == true):
+		// sfw
+		echo $sfwContent['displayString'];
+		echo $titleContent['displayString'];
+		echo "<?php echo " . $this->iString('in') . ";?> " . $catContent;
+		echo $cDateContent;
+		echo $authorContent;
+
+		//Actions
+		if ($haveActions == true && $hideActionsList == false):
+			echo $actionsButton;
+		endif;
+	else:
+		// Header
+		echo "<div class=\"article-list-header\">\n";
+		echo "<h2 class=\"inline\">{$sfwContent['displayString']} {$titleContent['displayString']}</h2>";
+		echo "<span class=\"header-content\"><?php echo " . $this->iString('in') . ";?> $catContent</span>";
+
+		// Actions
+		if ($haveActions == true && $hideActionsList == false):
+			echo $actionsButton;
+		endif;
+		// End of item headers
+		echo "\t</div>\n\n";
+
+		echo "\t<div class=\"article-list-content\">\n";
+		echo $contentContent['displayString'];
+		echo "\t</div>\n\n";
+
+		echo "\t<div class=\"article-list-footer\">\n";
+		echo implode("\n&nbsp;-&nbsp;", array_filter(array(
+				$authorContent,
+				$cDateContent,
+				$mDateContent,
+				$licenseContent
+		)));
+		echo "\t</div>\n";
 	endif;
+	?>
+</div>
+<?php
+echo "<?php";
+if (!$this->s_haveSFW()):
+	echo "\nendif;\n";
+endif;
 echo "\nendforeach;?>\n";
 
 /* ---------------------------------------------------------------------------
@@ -293,4 +297,4 @@ include $themePath . 'views/common/pagination.ctp';
 /* -----------------------------------------------------------------------------
  * Additionnal scripts and CSS
  */
-include $themePath.'views/common/additionnal_js_css.ctp';
+include $themePath . 'views/common/additionnal_js_css.ctp';

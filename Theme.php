@@ -292,9 +292,10 @@ class Theme extends SbShell {
 	 *
 	 * @param string $field Field name
 	 * @param array $config Field configuration
+	 * @param array $options An array of options
 	 * @return array Configuration for the field
 	 */
-	public function v_prepareField($field, $config) {
+	public function v_prepareField($field, $config, $options = array()) {
 
 		// Field options for views
 		$tdClass = null; // Class for table rows containing this element
@@ -340,7 +341,12 @@ class Theme extends SbShell {
 					$displayString = $this->v_displayString_Anon($displayString, $field);
 				}
 
-				$displayString = "<?php\n$displayString\n?>";
+				// Link ?
+				if (isset($options['url']) && !is_null($options['url'])) {
+					$displayString = "<?php echo \$this->Html->link($fieldString, {$options['url']})?>";
+				} else {
+					$displayString = "<?php\n$displayString\n?>";
+				}
 				break;
 
 			// Datetimes
@@ -954,7 +960,7 @@ class Theme extends SbShell {
 			if (isset($options['conditions'][$rel])) {
 				$currentConditions = $this->c_containConditions($options['conditions'][$rel]);
 			}
-			if (count($currentConditions)>0) {
+			if (count($currentConditions) > 0) {
 				$relations[$rel]['conditions'] = $currentConditions;
 			}
 		}
