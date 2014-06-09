@@ -27,6 +27,7 @@ plugins:
   Blog:
     options:
       icon: book
+    displayName: Articles
     generate: true
     parts:
       ## Posts
@@ -40,6 +41,10 @@ plugins:
                     Post.published: 1
                 view:
                   options:
+                    hiddenFields:
+                      published
+                      created
+                      modified
 
               index:
                 options:
@@ -80,7 +85,12 @@ plugins:
                     conditions:
                       user_id: %self%
                     hiddenFields:
-                      text
+                      text_fra
+                      text_eng
+                      excerpt_fra
+                      excerpt_eng
+                      created
+                      user_id
               add:
                 options:
                   conditions:
@@ -91,10 +101,14 @@ plugins:
 
         options:
           icon: book
+          fieldNames:
+            user_id: Author
       ## Post categories
       PostCategories:
         options:
           icon: list-ul
+          fieldNames:
+            user_id: Author
         controller:
           actions:
             public:
@@ -103,18 +117,4 @@ plugins:
                   containConditions:
                     Post:
                       published: 1
-                view:
-                  options:
-                    assoc_hiddenModelFields:
-                      Posts:
-                        created
-                        modified
-                        anon
-                        id
-                        license_id
-                        post_category_id
-                        text_fra
-                        text_eng
-                        published
-                        user_id
-                        sfw
+

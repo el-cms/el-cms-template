@@ -15,6 +15,8 @@
  *  - order         (mixed)
  *  - name          (string)
  *  - cacheQueries  (bool)
+ * 
+ * Models will act as Container if they have associati
  *
  * Options to implement: $data, must check this option.
  *
@@ -137,16 +139,6 @@ if (!empty($actsAs)):
 endif;
 
 //
-// virtualFields
-//
-if (!empty($virtualFields)):
-	echo "\t/**\n\t * Virtual fields\n\t *\n\t * @var array\n\t */\n";
-	echo "\tpublic \$virtualFields=array(\n";
-	echo $this->displayArray($virtualFields);
-	echo ");\n\n";
-endif;
-
-//
 // useDBConfig
 //
 if ($useDbConfig !== 'default'):
@@ -169,6 +161,16 @@ endif;
 if ($primaryKey !== 'id'):
 	echo "\t/**\n\t	* Primary key field\n\t	*\n\t	* @var string\n\t	*/\n";
 	echo "\tpublic \$primaryKey = '$primaryKey';\n\n";
+endif;
+
+//
+// virtualFields
+//
+if (!empty($virtualFields)):
+	echo "\t/**\n\t * Virtual fields\n\t *\n\t * @var array\n\t */\n";
+	echo "\tpublic \$virtualFields=array(\n";
+	echo $this->displayArray($virtualFields);
+	echo ");\n\n";
 endif;
 
 //
@@ -274,6 +276,7 @@ if (!empty($validate)):
 	echo "\t);\n";
 endif;
 ?>
+
 //
 // The Associations below have been created with all possible keys, those that are not needed can be removed
 //

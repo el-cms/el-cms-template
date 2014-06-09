@@ -181,3 +181,7 @@ theme:
   gravatar:
     ## Use Gravatar avatars ?
     useGravatar: true
+
+  ## If set to true, the foreign key referencing the current item will be removed
+  ## from association displays.
+  removeSelfIdInAssociations: true

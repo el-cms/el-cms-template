@@ -17,6 +17,19 @@
 ##
 ##-----------------------------------------------------------------------
 ---
+
+## Some options for this plugin
+defaults:
+  view:
+    options:
+      assoc_hiddenModelFields:
+        Users:
+          password
+          see_nsfw
+          modified
+          realname
+
+
 plugins:
 
   ## --------------------------------------------------------------------------
@@ -73,14 +86,16 @@ plugins:
                   layout: login
                 view:
                   template: users::login
-
-#              register:
-#                template: users::register
-#                view:
-#                  template: users::register
               logout:
                 template: users::logout
               view:
+                view:
+                  options:
+                    hiddenFields:
+                      see_nsfw
+                    assoc_hiddenModelFields:
+                      Posts:
+                        user_id
                 options:
                   containConditions:
                     Post:

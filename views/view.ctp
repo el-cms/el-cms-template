@@ -78,20 +78,6 @@ if (!isset($relatedDataHideActionsList)) {
 }
 
 /* ----------------------------------------------------------------------------
- * Options from theme
- */
-
-//// Fields that possibly contain nsfw data:
-//$nsfwDataFields=$this->Sbc->getConfig('theme.nsfwDataFields');
-//// Fields that possibly can define if an item is safe or not:
-//$sfwField=$this->Sbc->getConfig('theme.sfw.sfwField');
-//
-//// Fields that defines a post as anonymous
-//$anonField=$this->Sbc->getConfig('theme.anon.field');
-//// Fields that can contain data compromising user anonymity
-//$anonDataFields=$this->Sbc->getConfig('theme.anon.dataFields');
-
-/* ----------------------------------------------------------------------------
  * related data options
  */
 // Has Many : hide actions
@@ -140,7 +126,7 @@ foreach ($fields as $field) {
 			// types, bypassing the string lenght
 			if ($schema[$field]['length'] > 50 || in_array($schema[$field]['type'], array('text'))) {
 				$textFields[$field] = array(
-						'field' => "echo " . $this->iString(Inflector::humanize($field)) . ";",
+						'field' => "echo " . $this->iString($this->v_fieldName($field)) . ";",
 						'content' => $fieldContent['displayString']
 				);
 				$isTextField = true;
@@ -148,7 +134,7 @@ foreach ($fields as $field) {
 		}
 		if ($isTextField == false) {
 			$regularFields[$field] = array(
-					'field' => "echo " . $this->iString(Inflector::humanize($field)) . ";",
+					'field' => "echo " . $this->iString($this->v_fieldName($field)) . ";",
 					'content' => $fieldContent['displayString']
 			);
 		}
@@ -156,7 +142,7 @@ foreach ($fields as $field) {
 		// Foreign key:
 		$fieldContent = $this->v_prepareFieldForeignKey($field, $key, $schema[$field]);
 		$regularFields[$field] = array(
-				'field' => "echo " . $this->iString(Inflector::humanize($field)) . ";",
+				'field' => "echo " . $this->iString($this->v_fieldName($field)) . ";",
 				'content' => $fieldContent['displayString']
 		);
 	}
@@ -217,6 +203,8 @@ endif;
 			$originalFieldsList = $details['fields'];
 			// Prepare the fields
 			$details = $this->s_prepareSchemaRelatedFields($alias, $details, true);
+			echo ($alias);
+			var_dump($details);die();
 
 			// View for hasOne associations.
 			$hasOne.= "<?php if (isset(\${$singularVar}['{$alias}']['{$details['primaryKey']}'])): ?>\n";
@@ -228,7 +216,7 @@ endif;
 			foreach ($details['fields'] as $field):
 
 				$fieldContent = $this->v_prepareRelatedField($field, $details, $originalFieldsList, true);
-				$hasOne.= "\t\t<dt><?php echo " . $this->iString(Inflector::humanize($field)) . "; ?></dt>\n";
+				$hasOne.= "\t\t<dt><?php echo " . $this->iString($this->v_fieldName($field)) . "; ?></dt>\n";
 				$hasOne.= "\t\t<dd>\n\t{$fieldContent['displayString']}\n</dd>\n";
 
 			endforeach;
@@ -360,7 +348,7 @@ foreach ($relations as $alias => $details):
 
   // Headers
 		foreach ($details['fields'] as $field):
-			$divs.= "\t\t\t\t\t\t<th><?php echo " . $this->iString(Inflector::humanize($field)) . "; ?></th>\n";
+			$divs.= "\t\t\t\t\t\t<th><?php echo " . $this->iString($this->v_fieldName($field)) . "; ?></th>\n";
 		endforeach;
 
 		$divs.= "\t\t\t\t\t</tr>\n";

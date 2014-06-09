@@ -20,7 +20,7 @@
 ---
 #--------------------------------------------------------------------------
 #
-# File description
+# Template short description
 #
 #--------------------------------------------------------------------------
 description: Full configuration file for ExperimentsLabs
@@ -61,7 +61,12 @@ general:
   ## This license will be added in generated files
   editorLicenseTemplate: gpl3
   ## Package name
-  basePackage: ELABS
+  ## This is used in files headers, you can leave this blank if you have no use of it
+  basePackage: EXAMPLE
+
+  ##
+  ## Current site infos
+  ##
 
   ## Current site name
   siteName: Experiments Labs

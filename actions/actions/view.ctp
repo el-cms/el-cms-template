@@ -10,7 +10,7 @@
  *
  * Other:
  * ======
- *  Nothing
+ *  Have support for containers
  *
  * @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
  * @author        Manuel Tancoigne <m.tancoigne@gmail.com>
@@ -78,7 +78,7 @@ public function <?php echo $admin . $a ?>($id = null) {
 
 	// "Contain" section:
 	if(count($contain)>0){
-		$containString="'contain' => ".var_export($contain, true).',';
+		$containString="'contain' => ".$this->displayArray($contain).',';
 	}
 ?>
 	$options = array(

@@ -45,6 +45,8 @@ class Theme extends SbShell {
 	 * @var string
 	 */
 	public $templatePath = null;
+	// Other models
+	public $otherModels = array();
 
 	/* ---------------------------------------------------------------------------
 	 *
@@ -66,6 +68,21 @@ class Theme extends SbShell {
 	 * Methods to work on schemas
 	 *
 	 * ------------------------------------------------------------------------- */
+
+	public function s_loadModel($model, $plugin = null) {
+		if (!in_array($model, $this->otherModels)) {
+			if (!is_null($plugin)) {
+				$plugin = $this->Sbc->getPluginName($this->Sbc->getModelPlugin($model));
+			}
+			App::uses($model, $plugin . '.Model');
+			// Checks if Model has been loaded correctly
+			if (!class_exists($model)) {
+				$this->speak(__d('superBake', "Generate {$plugin}$model model first", 'error', 0));
+				$this->_stop();
+			}
+			$this->otherModels[$model] = ClassRegistry::init($model);
+		}
+	}
 
 	/**
 	 * Updates the fields list considering the fields to be hidden and the different
@@ -89,11 +106,11 @@ class Theme extends SbShell {
 			//
 			// Hidden fields : removing field if it should not be seen.
 			//
+
 			if (is_array($this->templateVars['hiddenFields']) && in_array($field, $this->templateVars['hiddenFields'])) {
 				// Removing from fields list
+				$this->speak("Removing $field from field list.");
 				unset($this->templateVars['fields'][$i]);
-				// Removing from field list in schema definition
-				// unset($this->templateVars['schema'][$field]);
 			} else { // Normal field
 				//
 				// Checking for language field: field_[lng]
@@ -149,10 +166,10 @@ class Theme extends SbShell {
 	 * @return array List of shema related dependencies.
 	 */
 	public function s_prepareSchemaRelatedFields($model, $relation, $hasOne = false) {
-
 		$i = 0;
 		// Language fields (for summary)
 		$languageFields = array();
+
 		foreach ($relation['fields'] as $field) {
 
 			//
@@ -162,6 +179,9 @@ class Theme extends SbShell {
 				$hiddenFields = $this->templateVars['assoc_hiddenModelFields'][Inflector::pluralize($model)];
 			} else {
 				$hiddenFields = array();
+			}
+			if ($this->Sbc->getConfig('theme.removeSelfIdInAssociations') && $field == $relation['foreignKey']) {
+				$hiddenFields[] = $relation['foreignKey'];
 			}
 			if (in_array($field, $hiddenFields)) {
 				unset($relation['fields'][$i]);
@@ -196,6 +216,17 @@ class Theme extends SbShell {
 			$i++;
 		}
 		return $relation;
+	}
+
+	public function s_getBelongsToAndLoadModels($model) {
+		$this->s_loadModel($model, $this->Sbc->getModelPlugin($model));
+		$assocs = $this->otherModels[$model]->belongsTo;
+		$out = array();
+		foreach ($assocs as $k => $v) {
+			$this->s_loadModel($k, $this->Sbc->getModelPlugin($k));
+			$out[$k] = $v;
+		}
+		return $out;
 	}
 
 	/**
@@ -386,35 +417,48 @@ class Theme extends SbShell {
 	 */
 	public function v_prepareRelatedField($field, $config, $originalFieldsList, $hasOne = false) {
 
+		//Current Model:
+		$model = Inflector::classify($config['controller']);
+
+		$assocs = $this->s_getBelongsToAndLoadModels($model);
 		// Class for table cells
 		$tdClass = null;
 		// Field name in views
 		if ($hasOne) {
-			$fieldString = "\${$this->templateVars['singularVar']}['" . Inflector::classify($config['controller']) . "']['$field']";
+			$fieldString = "\${$this->templateVars['singularVar']}['$model']['$field']";
 			$relationType = 'hasOne';
 		} else {
 			$fieldString = "\$" . Inflector::variable(Inflector::singularize($config['controller'])) . "['$field']";
 			$relationType = 'hasMany';
 		}
+
 		// String to display data
 		$displayString = "echo $fieldString;";
+
 		// String to display form element
 		$displayForm = $this->v_formInput($field, array('class' => 'text-muted'));
 
+		// Foreign key field ?
+		foreach ($assocs as $assoc => $assocConfig) {
+			if ($field == $assocConfig['foreignKey']) {
+				$displayString = "echo \$" . Inflector::variable($model) . "['$assoc']['" . ((is_null($this->otherModels[$assoc]->displayField)) ? $this->otherModels[$assoc]->primaryKey : $this->otherModels[$assoc]->displayField) . "'];";
+				$this->speak("$field is a FK for '$assoc' !");
+			}
+		}
 		// Configuration data is poor, so we can't check data type.
 		// Language field ?
 		if (!empty($config['fieldsOptions'][$field]) && $config['fieldsOptions'][$field]['subType'] == 'language') {
-			$displayString = $this->v_displayString_Language($field, $config, $relationType, Inflector::classify($config['controller']));
+			$displayString = $this->v_displayString_Language($field, $config, $relationType, $model);
 		}
 
 		// SFW ?
 		if ($this->s_haveSFW($originalFieldsList)) {
-			$displayString = $this->v_displayString_sfwContent($displayString, $field, $relationType, Inflector::classify($config['controller']));
+			$displayString = $this->v_displayString_sfwContent($displayString, $field, $relationType, $model);
 		}
 
 		// Anon ?
 		if ($this->s_haveAnon($originalFieldsList)) {
-			$displayString = $this->v_displayString_Anon($displayString, $field, $relationType, Inflector::classify($config['controller']));
+			$displayString = $this->v_displayString_Anon($displayString, $field, $relationType, $model);
 		}
 
 		$config['displayString'] = "<?php $displayString ?>";
@@ -425,7 +469,8 @@ class Theme extends SbShell {
 	}
 
 	/**
-	 * Prepares a string to use in views top display a foreign key.
+	 * Prepares a string to use in views top display a foreign key. If the current
+	 * prefix is allowed to view the action, a link will be made.
 	 *
 	 * @param type $field
 	 * @param string $key
@@ -433,8 +478,9 @@ class Theme extends SbShell {
 	 * @return string String to use in views
 	 */
 	public function v_prepareFieldForeignKey($field, $key, $config) {
-		// Field options for views
-		$tdClass = null; // Class for table rows containing this element
+
+		// Class for table rows (or whatever you want) containing this element
+		$tdClass = null;
 		// Field name
 		$fieldString = "\${$this->templateVars['singularVar']}['{$key['alias']}']['{$key['field']}']";
 		// Field to display on views
@@ -475,7 +521,6 @@ class Theme extends SbShell {
 	 */
 	public function v_displayString_Anon($displayString, $field, $inRelation = null, $relatedModel = null) {
 
-
 		switch ($inRelation) {
 			case 'hasOne':
 				$anonField = "\${$this->templateVars['singularVar']}['$relatedModel']['{$this->Sbc->getConfig('theme.anon.field')}']";
@@ -510,7 +555,6 @@ class Theme extends SbShell {
 	 * @return string String to use in views
 	 */
 	public function v_displayString_Language($field, $config, $inRelation = null, $relatedModel = null) {
-
 		switch ($inRelation) {
 			case 'hasOne':
 				$fieldString = "\${$this->templateVars['singularVar']}['$relatedModel']"
@@ -554,7 +598,7 @@ class Theme extends SbShell {
 	 * @return string String to use in template
 	 */
 	public function v_displayString_sfwContent($displayString, $field, $inRelation = null, $relatedModel = null) {
-
+//		$this->speak("Field: $field - Relation: $inRelation - Model:$relatedModel");
 		switch ($inRelation) {
 			case 'hasOne':
 				$sfwField = "\${$this->templateVars['singularVar']}['$relatedModel']['{$this->Sbc->getConfig('theme.sfw.field')}']";
@@ -568,17 +612,26 @@ class Theme extends SbShell {
 				break;
 		}
 
-		if (in_array($field, $this->Sbc->getConfig('theme.sfw.dataFields'))) {
-			return "if($sfwField == " . $this->Sbc->getConfig('theme.sfw.fieldUnSafeContent') . " && \$seeNSFW == false): ?>\n"
-							. "<div class=\"text-muted\">\n"
-							. "\t<?php echo " . $this->iString('This content may not be safe for work or young people, and will not be displayed.') . "?>\n"
-							. "</div>\n"
-							. "<?php\n"
-							. "else:\n"
-							. "\t{$displayString}\n"
-							. "endif;";
-		} else {
-			return $displayString;
+		switch ($field) {
+			// SFW content
+			case in_array($field, $this->Sbc->getConfig('theme.sfw.dataFields')):
+				return "if($sfwField == " . $this->Sbc->getConfig('theme.sfw.fieldUnSafeContent') . " && \$seeNSFW == false): ?>\n"
+								. "<div class=\"text-muted\">\n"
+								. "\t<?php echo " . $this->iString('This content may not be safe for work or young people, and will not be displayed.') . "?>\n"
+								. "</div>\n"
+								. "<?php\n"
+								. "else:\n"
+								. "\t{$displayString}\n"
+								. "endif;";
+				break;
+			// SFW field
+			case $this->Sbc->getConfig('theme.sfw.field'):
+				// An icon should be displayed instead of the value
+				return "echo ($sfwField==1)?'<i class=\"fa fa-check-circle-o text-success\"></i>':'<i class=\"fa fa-circle-o\"></i>';";
+				break;
+			default:
+				return $displayString;
+				break;
 		}
 	}
 
@@ -602,22 +655,6 @@ class Theme extends SbShell {
 		return "<?php echo \$this->Form->input('$field'" . ((!is_null($options) ? ", $options" : "" ) ) . ");?>";
 	}
 
-	public function v_navbar() {
-
-	}
-
-	public function v_link($text, $icon, $class) {
-
-	}
-
-	public function v_bDropdown($title, $items) {
-
-	}
-
-	public function v_splitBDropdown($title, $link, $items) {
-
-	}
-
 	/**
 	 * Creates an alert div with given class and content.
 	 *
@@ -637,18 +674,6 @@ class Theme extends SbShell {
 		$alert.=$content;
 		$alert.='</div>';
 		return $alert;
-	}
-
-	public function v_nav($titles, $divs, $class) {
-
-	}
-
-	public function v_label($content, $class) {
-
-	}
-
-	public function v_badge($content, $class = null) {
-
 	}
 
 	/**
@@ -727,22 +752,6 @@ class Theme extends SbShell {
 		return false;
 	}
 
-	public function v_progress($min, $max, $val, $class) {
-
-	}
-
-	public function v_panel($title, $content) {
-
-	}
-
-	public function v_well($content, $class) {
-
-	}
-
-	public function v_modal($content, $title = null, $links = array(), $closeButton = false) {
-
-	}
-
 	public function v_tooltip($text, $class = null, $options = array()) {
 		$tooltip = "";
 		$tooltip.="title=\"$text\" data-toggle=\"tooltip\"";
@@ -754,14 +763,6 @@ class Theme extends SbShell {
 			$tooltip.=" data-$k=\"$v\"";
 		}
 		return $tooltip;
-	}
-
-	public function v_collapse($titles, $contents, $name) {
-
-	}
-
-	public function v_carousel($images, $descriptions) {
-
 	}
 
 	public function v_icon($icon, $title = null) {
@@ -907,7 +908,11 @@ class Theme extends SbShell {
 	 * @return string
 	 */
 	public function v_fieldName($field) {
-		return Inflector::humanize(Inflector::camelize($field));
+		if (array_key_exists($field, $this->templateVars['fieldNames'])) {
+			return $this->templateVars['fieldNames'][$field];
+		} else {
+			return ucfirst(strtolower(Inflector::humanize($field)));
+		}
 	}
 
 	/*	 * ************************************************************************
@@ -942,6 +947,18 @@ class Theme extends SbShell {
 		foreach ($model->hasMany as $assoc => $config) {
 			if (!in_array($assoc, $options['hiddenAssociations'])) {
 				$relations[$assoc] = array();
+				$this->speak("$assoc:");
+				// Loads the associated model
+				$this->s_loadModel($assoc);
+				foreach ($this->otherModels[$assoc]->belongsTo as $fAssoc => $fAssocData) {
+					$fModelConfig = $this->Sbc->getModelConfig($fAssoc);
+					// PK
+					$relations[$assoc][$fAssoc][] = $this->otherModels[$assoc]->primaryKey;
+					// Display field
+					if (!empty($fModelConfig['displayField'])) {
+						$relations[$assoc][$fAssoc][] = $fModelConfig['displayField'];
+					}
+				}
 			}
 		}
 		foreach ($model->belongsTo as $assoc => $config) {
@@ -970,6 +987,7 @@ class Theme extends SbShell {
 
 	/**
 	 * Adds conditions for the containable behavior.
+	 *
 	 * @param type $conditions
 	 * @return string
 	 */
@@ -977,6 +995,7 @@ class Theme extends SbShell {
 		$return = array();
 		foreach ($conditions as $condition => $value) {
 			switch ($condition) {
+				// Hide the "anon" field
 				case '%noAnon%':
 					if ($this->Sbc->getConfig('theme.anon.useAnon')) {
 						$return[$this->Sbc->getConfig('theme.anon.field')] = 0;
