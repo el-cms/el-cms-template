@@ -46,7 +46,7 @@ switch ($alertClass) {
 		$class = "info";
 		break;
 }
-$content = $this->v_icon($icon)
+$content = $this->v_eIcon($icon)
 				. "<?php
 	if (is_array(\$message)) {
 		echo \$this->Html->nestedList(\$message);
@@ -55,4 +55,4 @@ $content = $this->v_icon($icon)
 	}
 	?>";
 
-echo $this->v_alert($content, $alertClass, true);
+echo $this->v_eAlert($content, $alertClass, true);

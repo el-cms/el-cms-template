@@ -48,7 +48,7 @@ echo "<?php\n";
 * @package       <?php echo $this->Sbc->getConfig('general.basePackage') ?>/<?php echo $plugin . "\n" ?>
 *
 <?php
-$licenseTemplate = dirname(dirname(dirname(__FILE__))) . DS . 'common' . DS . 'licenses' . DS . $this->Sbc->getConfig('general.editorLicenseTemplate') . '.ctp';
+$licenseTemplate = dirname(dirname(__FILE__)) . DS . 'common' . DS . 'licenses' . DS . $this->Sbc->getConfig('general.editorLicenseTemplate') . '.ctp';
 if (file_exists($licenseTemplate)):
 	include $licenseTemplate;
 	echo "\n";

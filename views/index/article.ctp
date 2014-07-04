@@ -91,7 +91,7 @@ if (!isset($sfwField)) {
 	$sfwContent = null;
 } else {
 	// Content for the icon in view
-	$sfwContent = $this->v_prepareField($sfwField, $schema[$sfwField]);
+	$sfwContent = $this->v_prepareDisplayField($sfwField, $schema[$sfwField]);
 }
 
 // Title field. If empty, will use primary key
@@ -103,7 +103,7 @@ if (!isset($titleField)) {
 	if ($this->canDo('view')) {
 		$url = "array('action' => 'view', \${$singularVar}['{$modelClass}']['{$primaryKey}'])";
 	}
-	$titleContent = $this->v_prepareField($titleField, $schema[$titleField], array('url'=>$url));
+	$titleContent = $this->v_prepareDisplayField($titleField, $schema[$titleField], array('url'=>$url));
 }
 
 // Content field. If empty, the article list will be compact.
@@ -113,7 +113,7 @@ if (!isset($contentField)) {
 	// If no content, view will be compact
 	$listIsCompact = true;
 } else {
-	$contentContent = $this->v_prepareField($contentField, $schema[$contentField]);
+	$contentContent = $this->v_prepareDisplayField($contentField, $schema[$contentField]);
 }
 
 // Creation date field. Can be empty/null.
@@ -121,8 +121,8 @@ if (!isset($cDateField)) {
 	$cDateField = null;
 	$cDateContent = null;
 } else {
-	$cDateContent = $this->v_prepareField($cDateField, $schema[$cDateField]);
-	$cDateContent = $this->v_icon('calendar') . $cDateContent['displayString'];
+	$cDateContent = $this->v_prepareDisplayField($cDateField, $schema[$cDateField]);
+	$cDateContent = $this->v_eIcon('calendar') . $cDateContent['displayString'];
 }
 
 // Modification date field. Can be empty/null.
@@ -130,8 +130,8 @@ if (!isset($mDateField)) {
 	$mDateField = null;
 	$mDateContent = null;
 } else {
-	$mDateContent = $this->v_prepareField($mDateField, $schema[$mDateField]);
-	$mDateContent = $this->v_icon('calendar') . $mDateContent['displayString'];
+	$mDateContent = $this->v_prepareDisplayField($mDateField, $schema[$mDateField]);
+	$mDateContent = $this->v_eIcon('calendar') . $mDateContent['displayString'];
 }
 // Category field. Can be empty/null.
 if (!isset($catField)) {
@@ -139,11 +139,11 @@ if (!isset($catField)) {
 	$catContent = null;
 } else {
 	// Search if this key is in a foreign table
-	$fk = $this->v_isFieldKey($catField, $associations);
+	$fk = $this->v_isFieldForeignKey($catField, $associations);
 	if (is_array($fk)) {
-		$catContent = $this->v_prepareFieldForeignKey($catField, $fk, $schema[$catField]);
+		$catContent = $this->v_prepareDisplayFieldForeignKey($catField, $fk, $schema[$catField]);
 	} else {
-		$catContent = $this->v_prepareField($catField, $schema[$catField]);
+		$catContent = $this->v_prepareDisplayField($catField, $schema[$catField]);
 	}
 	$catContent = $catContent['displayString'];
 }
@@ -153,13 +153,13 @@ if (!isset($licenseField)) {
 	$licenseContent = null;
 } else {
 	// Search if this key is in a foreign table
-	$fk = $this->v_isFieldKey($licenseField, $associations);
+	$fk = $this->v_isFieldForeignKey($licenseField, $associations);
 	if (is_array($fk)) {
-		$licenseContent = $this->v_prepareFieldForeignKey($licenseField, $fk, $schema[$licenseField]);
+		$licenseContent = $this->v_prepareDisplayFieldForeignKey($licenseField, $fk, $schema[$licenseField]);
 	} else {
-		$licenseContent = $this->v_prepareField($licenseField, $schema[$licenseField]);
+		$licenseContent = $this->v_prepareDisplayField($licenseField, $schema[$licenseField]);
 	}
-	$licenseContent = $this->v_icon('tag') . $licenseContent['displayString'];
+	$licenseContent = $this->v_eIcon('tag') . $licenseContent['displayString'];
 }
 // Authorfield. Can be empty/null.
 if (!isset($authorField)) {
@@ -167,13 +167,13 @@ if (!isset($authorField)) {
 	$authorContent = null;
 } else {
 	// Search if this key is in a foreign table
-	$fk = $this->v_isFieldKey($authorField, $associations);
+	$fk = $this->v_isFieldForeignKey($authorField, $associations);
 	if (is_array($fk)) {
-		$authorContent = $this->v_prepareFieldForeignKey($authorField, $fk, $schema[$authorField]);
+		$authorContent = $this->v_prepareDisplayFieldForeignKey($authorField, $fk, $schema[$authorField]);
 	} else {
-		$authorContent = $this->v_prepareField($authorField, $schema[$authorField]);
+		$authorContent = $this->v_prepareDisplayField($authorField, $schema[$authorField]);
 	}
-	$authorContent = $this->v_icon('user') . $authorContent['displayString'];
+	$authorContent = $this->v_eIcon('user') . $authorContent['displayString'];
 }
 
 /* ----------------------------------------------------------------------------

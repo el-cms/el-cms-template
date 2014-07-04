@@ -4,7 +4,7 @@
 ## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
 ## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
 ## @link          http://experimentslabs.com Experiments Labs
-## @package       ELCMS.superBake.Configuration
+## @package       ELCMS.superBake.Templates.Elabs
 ## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
 ## @version       0.3
 ##
@@ -91,7 +91,7 @@ plugins:
               index:
                 options:
                   conditions:
-                    user_id: %self%
+                    GalleryItem.user_id: %self%
     ## ---
     ## Required files for the gallery plugin
     ## ---

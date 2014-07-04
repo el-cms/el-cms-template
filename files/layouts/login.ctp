@@ -15,7 +15,7 @@
  * @version       0.3
  */
 //Page headers and licensing
-include $themePath . 'views/common/headers-files.ctp';
+include $themePath . 'common/headers-files.ctp';
 
 /* ----------------------------------------------------------------------------
  *

@@ -4,7 +4,7 @@
 ## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
 ## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
 ## @link          http://experimentslabs.com Experiments Labs
-## @package       ELCMS.superBake.Configuration
+## @package       ELCMS.superBake.Templates.Elabs
 ## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
 ## @version       0.3
 ##
@@ -12,18 +12,12 @@
 ##
 ## Configuration file for ExperimentsLabs
 ## -------------------------
-##      Defaults section.
-##
+##      Default values.
+##      Here are defined defaults settings. They are overriden in plugins definitions.
 ##
 ##-----------------------------------------------------------------------
 
 ---
-#--------------------------------------------------------------------------
-#
-# Default values.
-# Here are defined defaults settings. They are overriden in plugins definitions.
-#
-#--------------------------------------------------------------------------
 defaults:
 
   ##
@@ -43,7 +37,8 @@ defaults:
       ## Fields that don't have sorting links
       unSortableFields:
         id
-
+      ## Hidden fields from related tables
+      assoc_hiddenModelFields: []
   ##
   ## This is a default action
   ##
@@ -138,6 +133,11 @@ defaults:
         options:
           icon: pencil
         view:
+          options:
+            hiddenFields:
+              id
+              created
+              modified
       delete:
         haveView: false;
         options:
@@ -166,6 +166,12 @@ defaults:
       edit:
         options:
           icon: pencil
+        view:
+          options:
+            hiddenFields:
+              id
+              created
+              modified
 
   ##
   ## Default configuration for a controller
@@ -243,6 +249,7 @@ defaults:
         username: Pseudo
         user_id: User
         license_id: License
+        anon: Anonymous item
 
   ##
   ## Default plugin configuration

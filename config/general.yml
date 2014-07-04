@@ -4,7 +4,7 @@
 ## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
 ## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
 ## @link          http://experimentslabs.com Experiments Labs
-## @package       ELCMS.superBake.Configuration
+## @package       ELCMS.superBake.Template.Elabs
 ## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
 ## @version       0.3
 ##
@@ -50,13 +50,13 @@ general:
   ##
 
   ## Your name (for file headers)
-  editorName: Manuel Tancoigne
+  editorName: John Doe
   ## Your email adress (for file headers)
-  editorEmail: m.tancoigne@gmail.com
+  editorEmail: j.d@example.com
   ## Your website
-  editorWebsite: http://experimentslabs.com
+  editorWebsite: http://j-d.example.com
   ## Your website name
-  editorWebsiteName: ELabs
+  editorWebsiteName: Your Site Name
   ## Your license template (find out all licenses in template/commons/licenses/)
   ## This license will be added in generated files
   editorLicenseTemplate: gpl3
@@ -69,11 +69,11 @@ general:
   ##
 
   ## Current site name
-  siteName: Experiments Labs
-  ## Current site editor
-  siteEditor: Manuel Tancoigne
+  siteName: Brain recovery
+  ## Current site editor (usually your name)
+  siteEditor: John Doe
   ## site editor Email
-  siteEditorEmail: admin@experimentslabs.com
+  siteEditorEmail: j.d@example.com
 
 
   ##

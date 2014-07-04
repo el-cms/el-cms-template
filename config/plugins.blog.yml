@@ -4,7 +4,7 @@
 ## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
 ## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
 ## @link          http://experimentslabs.com Experiments Labs
-## @package       ELCMS.superBake.Configuration
+## @package       ELCMS.superBake.Templates.Elabs
 ## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
 ## @version       0.3
 ##
@@ -48,6 +48,7 @@ plugins:
 
               index:
                 options:
+                  defaultSortBy: publication_date
                   conditions:
                     Post.published: 1
                     Post.publication_date <=: %now%
@@ -62,7 +63,7 @@ plugins:
                     ## Content
                     contentField: excerpt
                     ## Creation date
-                    cDateField: created
+                    cDateField: publication_date
                     ## Modification date
                     #mDateField:
                     ## Category
@@ -98,6 +99,17 @@ plugins:
                   hiddenAssociations:
                     User
             admin:
+              index:
+                options:
+                  defaultSortBy: publication_date
+                view:
+                  options:
+                   hiddenFields:
+                      text_fra
+                      text_eng
+                      excerpt_fra
+                      excerpt_eng
+                      created
 
         options:
           icon: book

@@ -58,7 +58,7 @@
 				endif;
 				echo "\t<li>"
 				. "<?php echo \$this->Html->link('"
-				. $this->v_icon($this->Sbc->getConfig("plugins.${c['p']}.options.icon"))."'."
+				. $this->v_eIcon($this->Sbc->getConfig("plugins.${c['p']}.options.icon"))."'."
 				. $this->iString($element) . ","
 				. " array('plugin'=>" . (is_null($pluginName) ? 'null' : "'" . $pluginName . "'") . ","
 				. "'admin'=>" . (is_null($prefixName) ? 'false' : "'" . $prefixName . "'") . ","
@@ -68,7 +68,7 @@
 				break;
 			case 'text':
 				echo "\t<li><?php echo \$this->Html->link("
-				. ((!empty($c['icon']))?"'".$this->v_icon($c['icon'])."' . ":'')
+				. ((!empty($c['icon']))?"'".$this->v_eIcon($c['icon'])."' . ":'')
 				.$this->iString($element) . ", '{$c['url']}', array('escape' => false, 'target' => '_blank')"
 				.");?></li>\n";
 			case 'sfwSwitch':

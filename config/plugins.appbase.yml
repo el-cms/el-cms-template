@@ -4,7 +4,7 @@
 ## @copyright     Copyright 2012, Manuel Tancoigne (http://experimentslabs.com)
 ## @author        Manuel Tancoigne <m.tancoigne@gmail.com>
 ## @link          http://experimentslabs.com Experiments Labs
-## @package       ELCMS.superBake.Configuration
+## @package       ELCMS.superBake.Templates.Elabs
 ## @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
 ## @version       0.3
 ##
@@ -12,23 +12,23 @@
 ##
 ## Configuration file for ExperimentsLabs
 ## -------------------------
-##      Appbase plugin.
+##      "appBase" is not a plugin!
+##      Everything defined here will be baked in "app/".
+##      This section must be defined, even if you keep it empty.
+##      Here are defined defaults settings. They are overriden in plugins definitions.
+## ----------------------------
+##  Contains: Users, Groups
+## --------------------------------------------------------------------------
+## This is a special "plugin": it uses the <cake>/app/ folder as a plugin. All
+## the models, controllers,... will be created relatively to app/
+## If, for a reason you need to create a real plugin named 'appBase', change the
+## 'general.appBase' value of this file for something else, and put its name here too.
 ##
+## This is the "plugin" in wich you should define your app wide
+## menus/files/required things
 ##
 ##-----------------------------------------------------------------------
 ---
-
-## Some options for this plugin
-defaults:
-  view:
-    options:
-      assoc_hiddenModelFields:
-        Users:
-          password
-          see_nsfw
-          modified
-          realname
-
 
 plugins:
 
@@ -332,11 +332,46 @@ plugins:
       AppController:
         targetPath: Controller::AppController.php
         template: appController
+
+      ## Route-related configuration. If you want to use custom routes, edit the files/routes.ctp
+      ## template and add a new "file:" section in "appBase" plugin.
+      routes:
+        targetPath: Config::routes.php
+        template: routes
+        options:
+					## If false, lib/Cake/Config/routes.php will not be included at the end of generated file.
+          ## Use this setting to create your own routing system.
+          useCakeSystem: true
+          routes:
+            ## Home route
+            /:
+              ## Main plugin. If none, leave empty  or "AppBase"
+              plugin: AppBase
+              ## Main controller
+              controller: pages
+              ## Main action
+              action: display
+              ## List of params
+              params:
+                home
+              ## List of named params
+              named: []
+
+            ## Default pages system from cake:
+            /pages/*:
+              plugin:
+              controller: pages
+              action: display
+              params: []
+              named: []
+
+
       ##
       ## AppHelper
       AppHelper:
         targetPath: View::Helper::AppHelper.php
         template: helpers::appHelper
+
       ##
       ## Flash messages
       ##

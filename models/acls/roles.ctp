@@ -1,6 +1,6 @@
 <?php
 /**
- * Roles model modifications for EL-CMS
+ * Roles model modifications for superBake
  *
  * This file contains methods and vars used in the Group model to make it works
  * as requester (for ACLs)
@@ -13,7 +13,7 @@
  * @author        Manuel Tancoigne <m.tancoigne@gmail.com>
  * @link          http://experimentslabs.com Experiments Labs
  * @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
- * @package       ELCMS.superBake.Templates.Elabs.Models
+ * @package       ELCMS.superBake.Templates.Default.Models
  * @version       0.3
  */
 ?>

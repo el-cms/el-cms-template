@@ -16,7 +16,7 @@
  * @author        Manuel Tancoigne <m.tancoigne@gmail.com>
  * @link          http://experimentslabs.com Experiments Labs
  * @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
- * @package       ELCMS.superBake.Templates.Elabs.Actions
+ * @package       ELCMS.superBake.Templates.Default.Actions
  * @version       0.3
  */
 /* ----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ public function <?php echo $admin . $a ?>($id = null) {
 	$findConditions = '';
 	if (count($conditions) > 0):
 		foreach ($conditions as $k => $v):
-			$findConditions.="'$k' => " . $this->c_indexConditions($v) . ",\n";
+			$findConditions.="'$k' => " . $this->c_setFindConditions($v) . ",\n";
 		endforeach;
 	endif;
 
