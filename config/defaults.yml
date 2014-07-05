@@ -128,7 +128,15 @@ defaults:
       add:
         options:
           icon: plus
+          conditions:
+            user_id: %self%
         view:
+          options:
+            hiddenFields:
+              created
+              modified
+              published
+              user_id
       edit:
         options:
           icon: pencil
@@ -250,6 +258,13 @@ defaults:
         user_id: User
         license_id: License
         anon: Anonymous item
+        created: Creat. date
+        modified: Upd. date
+        publication_date: Pub. date
+        excerpt_fra: Fre. excerpt
+        excerpt_eng: Eng. excerpt
+        text_fra: French text
+        text_eng: English text
 
   ##
   ## Default plugin configuration

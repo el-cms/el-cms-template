@@ -81,6 +81,7 @@ plugins:
                 options:
                   conditions:
                     user_id: %self%
+                  title: My posts
                 view:
                   options:
                     conditions:
@@ -92,12 +93,7 @@ plugins:
                       excerpt_eng
                       created
                       user_id
-              add:
-                options:
-                  conditions:
-                    user_id: %self%
-                  hiddenAssociations:
-                    User
+
             admin:
               index:
                 options:
@@ -115,6 +111,10 @@ plugins:
           icon: book
           fieldNames:
             user_id: Author
+            ## Some fields will be camelCased when used in foreign keys references
+            PostCategory: Category
+            post_category_id: Category
+
       ## Post categories
       PostCategories:
         options:

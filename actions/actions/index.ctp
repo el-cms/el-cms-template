@@ -9,6 +9,7 @@
  *  - defaultSortBy       string, null*       Default column to sort the results on.
  *  - recursiveDepth      int, 0*             Default find depth for associations
  *  - layout              string, null*       Alternative layout
+ *  - title               string, null*       Title for layout
  *
  * Other:
  * ======
@@ -25,7 +26,7 @@
  *
  * Options
  *
- * --------------------------------------------------------------------------*/
+ * -------------------------------------------------------------------------- */
 // Include common options
 include 'common/common_options.ctp';
 
@@ -43,9 +44,11 @@ $recursiveDepth = (!isset($options['recursiveDepth'])) ? 0 : $options['recursive
 
 //// Internationalized fields (for field selections. If empty, select all fields)
 //$languageFields = (!isset($options['languageFields'])) ? array() : $options['languageFields'];
-
 // Conditions (for paginate)
 $conditions = (!isset($options['conditions']) || !is_array($options['conditions'])) ? array() : $options['conditions'];
+
+// Title for layout
+$titleForLayout = (!isset($options['title'])) ? 'Existing ' . strtolower(Inflector::pluralize(Inflector::humanize(Inflector::underscore($currentModelName)))) : $options['title'];
 
 /* ----------------------------------------------------------------------------
  * Other
@@ -60,8 +63,7 @@ $paginateOptions = null;
  *
  * Action
  *
- * --------------------------------------------------------------------------*/
-
+ * -------------------------------------------------------------------------- */
 ?>
 
 /**
@@ -72,13 +74,12 @@ $paginateOptions = null;
 * @return void
 */
 public function <?php echo $admin . $a ?>() {
-	<?php
-	// Support for a different layout. Look at the snippet for more info.
-	include $themePath . 'actions/snippets/layout_support.ctp';
-	?>
-	$this-><?php echo $currentModelName ?>->recursive = <?php echo $recursiveDepth ?>;
 <?php
-
+// Support for a different layout. Look at the snippet for more info.
+include $themePath . 'actions/snippets/layout_support.ctp';
+?>
+$this-><?php echo $currentModelName ?>->recursive = <?php echo $recursiveDepth ?>;
+<?php
 //
 // Pagination order
 //
@@ -100,5 +101,5 @@ if (!empty($paginateOptions)):
 endif;
 ?>
 $this->set('<?php echo $pluralName ?>', $this->paginate());
-$this->set('title_for_layout', <?php echo $this->iString('Existing ' . strtolower(Inflector::pluralize(Inflector::humanize(Inflector::underscore($currentModelName))))) ?>);
+$this->set ('title_for_layout', <?php echo $this->iString($titleForLayout) ?>);
 }

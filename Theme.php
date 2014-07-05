@@ -448,7 +448,7 @@ class Theme extends SbShell {
 			//
 			// Bools
 			case 'boolean':
-				$displayString = $this->v_eFormInput($field) . "\n";
+				$displayString = $this->v_eFormInput_CheckBox($field) . "\n";
 				break;
 
 			//
@@ -495,7 +495,6 @@ class Theme extends SbShell {
 
 		return $config;
 	}
-
 
 	/**
 	 * Returns a input HTML element for language fields
@@ -827,6 +826,23 @@ class Theme extends SbShell {
 	 */
 
 	/**
+	 * Displays a checkbox
+	 *
+	 * @param string $field Field name
+	 * @return string The checkbox control
+	 */
+	public function v_eFormInput_CheckBox($field) {
+		// Boolean entry
+
+		$niceName = $this->v_getNiceFieldName($field);
+		return "<div class=\"col-sm-10 col-sm-offset-2\">
+			<div class=\"form-group\">
+				<?php echo \$this->Form->label('$field', \$this->Form->input('$field', array('div' => false, 'label' => false)) . ' ' . " . $this->iString($niceName) . ", array('class' => 'checkbox-inline')); ?>
+			</div>
+    </div>";
+	}
+
+	/**
 	 * Creates a string for form input in views.
 	 *
 	 * @param string $field Field name
@@ -969,7 +985,7 @@ class Theme extends SbShell {
 	 * @return string String to add in the HTML
 	 */
 	public function v_newButtonGroup($content) {
-		$btnGroup ="\t<div class=\"btn-group\">\n";
+		$btnGroup = "\t<div class=\"btn-group\">\n";
 		foreach ($content as $item) {
 			$btnGroup.= "\t\t" . $item;
 		}
@@ -1048,21 +1064,20 @@ class Theme extends SbShell {
 		}
 	}
 
-
-	public function v_edateField($name, $data_format = 'dd MM yyyy - hh:ii') {
-		$out = "<div class=\"input-group date form_datetime\" id=\"{$name}_dtPicker\">\n";
-		$out.="<input type=\"text\" readonly class=\"form-control\" id=\"{$name}_field\" />\n";
-		$out.="\t<span class=\"input-group-addon\">
-				<span class=\"btn-small\"><i class=\"fa fa-remove\"></i></span>
-				<span class=\"btn-small\"><i class=\"fa fa-calendar\"></i></span>
-			</span>\n";
-//		$out.="\t
-//					<span class=\"input-group-addon\"><i class=\"fa fa-remove\"></i></span>
-//					<span class=\"input-group-addon\"><i class=\"fa fa-calendar\"></i></span>
-//				\n";
-		$out.="</div>\n";
-		$out.="\t<?php echo \$this->Form->input('$name', array('type' => 'hidden', 'readonly', 'data-format' => '$data_format', 'class' => 'form-control', 'div' => false, 'label' => false)); ?>\n";
-		$out.="<script type=\"text/javascript\">
+	public function v_eFormInput_DateTimePicker($name, $data_format = 'dd MM yyyy - hh:ii') {
+		$niceName = $this->iString($this->v_getNiceFieldName($name));
+		$out = "<div class=\"form-group\">\n";
+		$out.= "\t<?php echo \$this->Form->label('$name', $niceName, array('class' => 'col-lg-2 control-label')) ?>\n";
+		$out.= "\t<div class=\"col-lg-10" . ((!is_null($name)) ? '' : ' col-lg-offset-2') . "\">\n";
+		$out.= "\t\t<div class=\"input-group date form_datetime\" id=\"{$name}_dtPicker\">\n";
+		$out.= "\t\t\t<input type=\"text\" readonly class=\"form-control\" id=\"{$name}_field\" />\n";
+		$out.= "\t\t\t<span class=\"input-group-addon\">
+				\t\t\t\t<span class=\"fa fa-times\"></span>
+				\t\t\t\t<span class=\"fa fa-calendar\"></span>
+			\t\t\t</span>\n";
+		$out.="\t\t</div>\n";
+		$out.="\t\t<?php echo \$this->Form->input('$name', array('type' => 'hidden', 'readonly', 'data-format' => '$data_format', 'class' => 'form-control', 'div' => false, 'label' => false)); ?>\n";
+		$out.="\t\t<script type=\"text/javascript\">
 			$('#{$name}_field').val($('#Post" . Inflector::camelize($name) . "').val());
 							$('#{$name}_dtPicker').datetimepicker({
 			format: \"dd MM yyyy - hh:ii:ss\",
@@ -1077,7 +1092,9 @@ class Theme extends SbShell {
 							// This is lame, but it updates the fields with db value
 							$('#{$name}_dtPicker').datetimepicker('show');
 							$('#{$name}_dtPicker').datetimepicker('hide');
-		</script>\n";
+		\t\t</script>\n";
+		$out.= "\t</div>\n";
+		$out.= "</div>\n";
 		return $out;
 	}
 
@@ -1152,7 +1169,7 @@ class Theme extends SbShell {
 		$key = $this->v_isFieldForeignKey($field, $this->templateVars['associations']);
 		if (is_array($key)) {
 			// Display name for foreign keys:
-			$dField = $key['alias'];
+			$dField = $this->v_getNiceFieldName($key['alias']);
 		} else {
 			// Display name for "normal" fields:
 			$dField = $this->v_getNiceFieldName($field);

@@ -8,6 +8,10 @@
  * @license       GPL v3 (http://www.gnu.org/licenses/gpl.html)
  * @package       ELCMS.superBake.Templates.Elabs.Views
  * @version       0.3
+ *
+ * Options for this view:
+ * ======================
+ *   - assoc_hiddenModelFields   array List of related fields to hide (array('model'=>array(field1, field2,...))
  */
 //Page headers and licensing
 include $themePath . 'views/common/headers.ctp';
@@ -20,7 +24,6 @@ $schema = $this->templateVars['schema'];
 $fields = $this->templateVars['fields'];
 
 $haveFileField = $this->s_haveFileField($schema);
-
 /* ----------------------------------------------------------------------------
  * Current template options
  */
