@@ -68,20 +68,20 @@ public function <?php echo $admin . $a ?>($id = null) {
 // Support for a different layout. Look at the snippet for more info.
 include $themePath . 'actions/snippets/layout_support.ctp';
 
-// Fields
-$findFields = '';
-// Conditions
-$findConditions = '';
-if (count($conditions) > 0):
-	foreach ($conditions as $k => $v):
-		$findConditions.="'$k' => " . $this->c_setFindConditions($v) . ",\n";
-	endforeach;
-endif;
+	// Fields
+	$findFields = '';
+	// Conditions
+	$findConditions = '';
+	if (count($conditions) > 0):
+		foreach ($conditions as $k => $v):
+			$findConditions.="'$k' => " . $this->c_setFindConditions($v) . ",\n";
+		endforeach;
+	endif;
 
-// "Contain" section:
-if (count($contain) > 0) {
-	$containString = "'contain' => " . $this->displayArray($contain) . ',';
-}
+	// "Contain" section:
+	if(count($contain) > 0){
+		$containString = "'contain' => ".$this->displayArray($contain).',';
+	}
 ?>
 $options = array(
 'conditions' => array(

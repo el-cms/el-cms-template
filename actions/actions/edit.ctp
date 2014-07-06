@@ -32,6 +32,9 @@ if (!isset($hiddenAssociations)) {
 	$hiddenAssociations = array();
 }
 
+// Conditions (for paginate)
+$conditions = (!isset($options['conditions']) || !is_array($options['conditions'])) ? array() : $options['conditions'];
+
 /* ----------------------------------------------------------------------------
  *
  * Action
@@ -51,38 +54,42 @@ public function <?php echo $admin . $a; ?>($id = null) {
 // Support for a different layout. Look at the snippet for more info.
 include $themePath . 'actions/snippets/layout_support.ctp';
 ?>
-if (!$this-><?php echo $currentModelName; ?>->exists($id)) {
-throw new NotFoundException(<?php echo $this->iString('Invalid ' . strtolower($singularHumanName)) ?>);
-}
-if ($this->request->is('post') || $this->request->is('put')) {
-<?php
-// Check if the added item should be assigned to a given user
-if ($this->isComponentEnabled('Auth')):
-	$userId = Inflector::singularize(Inflector::tableize($this->Sbc->getConfig('theme.components.Auth.userModel'))) . '_' . $this->Sbc->getConfig('theme.components.Auth.userModelPK');
-	if (isset($conditions[$userId]) && $conditions[$userId] === '%self%'):
-//					$itemIsForSelf=true;
-		$this->speak(__d('superBake', '  - Edited items belongs to the logged in user.'), 'comment');
-		echo "// Assigning user Id to the new " . strtolower($currentModelName) . "\n";
-		echo "\$this->request->data['$currentModelName']['$userId'] = \$this->Session->read('Auth." . $this->Sbc->getConfig('theme.components.Auth.userModel') . "." . $this->Sbc->getConfig('theme.components.Auth.userModelPK') . "');\n";
-	else:
-		$this->speak(__d('superBake', '  - Edited items can be reassigned to a given user.'), 'comment');
-	endif;
-endif;
-?>
-if ($this-><?php echo $currentModelName; ?>->save($this->request->data)) {
-<?php echo $this->setFlash(ucfirst(strtolower($singularHumanName)) . ' has been saved', 'success', 'index'); ?>
-} else {
-<?php echo $this->setFlash(ucfirst(strtolower($singularHumanName)) . ' could not be saved', 'success', 'index'); ?>
-}
-} else {
-$options = array('conditions' => array('<?php echo $currentModelName; ?>.' . $this-><?php echo $currentModelName; ?>->primaryKey => $id));
-$<?php echo lcfirst($currentModelName); ?>Data = $this-><?php echo $currentModelName; ?>->find('first', $options);
-$this->request->data = $<?php echo lcfirst($currentModelName); ?>Data;
-}
-<?php
-$fieldToDisplay = (!empty($modelObj->displayField)) ? 'displayField' : 'primaryKey';
+	// Searching for the <?php echo "$currentModelName\n"; ?>
+	if ($this->request->is('post') || $this->request->is('put')) {
+		$id=$this->request->data['<?php echo $currentModelName; ?>']['<?php echo $primaryKey; ?>'];
+	}
 
+	// Building array of conditions
+	$options = array(
+			'conditions' => array(
+					'Post.<?php echo $primaryKey?>' => $id,
+	<?php
+	foreach ($conditions as $k => $v):
+		echo "\t\t\t\t\t'$k' => " . $this->c_setFindConditions($v) . ",\n";
+	endforeach;
+	?>
+					)
+			);
+
+	// Counting valid data
+	if (!$this-><?php echo $currentModelName; ?>->find('count', $options)==1) {
+		throw new NotFoundException(<?php echo $this->iString('Invalid ' . strtolower($singularHumanName)) ?>);
+	}
+
+	// Updating the post
+	if ($this->request->is('post') || $this->request->is('put')) {
+		if ($this-><?php echo $currentModelName; ?>->save($this->request->data)) {
+			<?php echo $this->setFlash(ucfirst(strtolower($singularHumanName)) . ' has been saved', 'success', 'index'); ?>
+		} else {
+			<?php echo $this->setFlash(ucfirst(strtolower($singularHumanName)) . ' could not be saved', 'success', 'index'); ?>
+		}
+	} else {
+		$<?php echo lcfirst($currentModelName); ?>Data = $this-><?php echo $currentModelName; ?>->find('first', $options);
+		$this->request->data = $<?php echo lcfirst($currentModelName); ?>Data;
+	}
+<?php
 // Title for layout
+$fieldToDisplay = (!empty($modelObj->displayField)) ? 'displayField' : 'primaryKey';
 if (isset($options['title']) && !empty($options['title'])) {
 	$titleForLayout = $this->iString($options['title']);
 } else {
@@ -91,6 +98,9 @@ if (isset($options['title']) && !empty($options['title'])) {
 ?>
 $this->set('title_for_layout', <?php echo $titleForLayout; ?>);
 <?php
+// List of linked models
+$compact=array();
+
 foreach (array('belongsTo', 'hasAndBelongsToMany') as $assoc):
 	foreach ($modelObj->{$assoc} as $associationName => $relation):
 		if (!empty($associationName) && !in_array($this->_modelName($associationName), $hiddenAssociations)):

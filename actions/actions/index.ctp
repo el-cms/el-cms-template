@@ -78,28 +78,28 @@ public function <?php echo $admin . $a ?>() {
 // Support for a different layout. Look at the snippet for more info.
 include $themePath . 'actions/snippets/layout_support.ctp';
 ?>
-$this-><?php echo $currentModelName ?>->recursive = <?php echo $recursiveDepth ?>;
-<?php
-//
-// Pagination order
-//
-if (!is_null($defaultSortBy)):
-	$paginateOptions.= "\t\t\t'order' => array('$defaultSortBy' => '$defaultSortOrder'),\n";
-endif;
+	$this-><?php echo $currentModelName ?>->recursive = <?php echo $recursiveDepth ?>;
+	<?php
+	//
+	// Pagination order
+	//
+	if (!is_null($defaultSortBy)):
+		$paginateOptions.= "\t\t\t'order' => array('$defaultSortBy' => '$defaultSortOrder'),\n";
+	endif;
 
-// Conditions
-if (count($conditions) > 0):
-	$paginateOptions.="\t\t\t'conditions' => array(\n";
-	foreach ($conditions as $k => $v):
-		$paginateOptions.="'$k' => " . $this->c_setFindConditions($v) . ",\n";
-	endforeach;
-	$paginateOptions.="\t\t\t),\n";
-endif;
-// Pagination options
-if (!empty($paginateOptions)):
-	echo "\$this->paginate = array(\n" . $paginateOptions . ");\n";
-endif;
-?>
-$this->set('<?php echo $pluralName ?>', $this->paginate());
-$this->set ('title_for_layout', <?php echo $this->iString($titleForLayout) ?>);
+	// Conditions
+	if (count($conditions) > 0):
+		$paginateOptions.="\t\t\t'conditions' => array(\n";
+		foreach ($conditions as $k => $v):
+			$paginateOptions.="'$k' => " . $this->c_setFindConditions($v) . ",\n";
+		endforeach;
+		$paginateOptions.="\t\t\t),\n";
+	endif;
+	// Pagination options
+	if (!empty($paginateOptions)):
+		echo "\$this->paginate = array(\n" . $paginateOptions . ");\n";
+	endif;
+	?>
+	$this->set('<?php echo $pluralName ?>', $this->paginate());
+	$this->set ('title_for_layout', <?php echo $this->iString($titleForLayout) ?>);
 }

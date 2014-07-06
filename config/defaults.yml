@@ -119,10 +119,14 @@ defaults:
     user:
       index:
         options:
+          conditions:
+            user_id: %self%
           icon: list
         view:
       view:
         options:
+          conditions:
+            user_id: %self%
           icon: eye-open
         view:
       add:
@@ -140,12 +144,14 @@ defaults:
       edit:
         options:
           icon: pencil
+          conditions:
+            user_id: %self%
         view:
           options:
             hiddenFields:
-              id
               created
               modified
+              user_id
       delete:
         haveView: false;
         options:

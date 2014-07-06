@@ -79,13 +79,9 @@ plugins:
             user:
               index:
                 options:
-                  conditions:
-                    user_id: %self%
                   title: My posts
                 view:
                   options:
-                    conditions:
-                      user_id: %self%
                     hiddenFields:
                       text_fra
                       text_eng

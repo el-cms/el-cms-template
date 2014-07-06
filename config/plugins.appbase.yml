@@ -113,6 +113,10 @@ plugins:
                 blackListed: true
             user:
               index:
+                options:
+                  conditions:
+                    ## Skipping defaults
+                    useDefaults: false
                 view:
                   options:
                     hiddenFields:
@@ -125,6 +129,10 @@ plugins:
                       email
                       nbposts
                       status
+              view:
+                options:
+                  conditions:
+                    useDefaults: false
               add:
                 blackListed: true
               delete:

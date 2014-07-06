@@ -490,6 +490,11 @@ class Theme extends SbShell {
 				break;
 		}
 
+		// Primary key ?
+		if ($field === $this->templateVars['primaryKey']) {
+			$displayString = $this->v_eFormInput($field, array('type' => 'hidden'));
+		}
+
 		// Adding new config to original one
 		$config['displayString'] = $displayString;
 
@@ -863,6 +868,7 @@ class Theme extends SbShell {
 		$niceName = $this->iString($this->v_getNiceFieldName($field));
 
 		$optionsString = "";
+		$hiddenInput = false;
 
 		// default options:
 		if (!isset($options['div'])) {
@@ -881,6 +887,11 @@ class Theme extends SbShell {
 			$optionsString.="'placeholder' => " . ((!isset($options['placeholder'])) ? $niceName : "${options['placeholder']}");
 			unset($options['placeholder']);
 		}
+		if (isset($options['type']) && $options['type'] === 'hidden') {
+//			$hiddenInput = true;
+//			unset($options['type']);
+			return "<?php echo \$this->Form->hidden('$field');?>\n";
+		}
 
 		//Other options:
 		foreach ($options as $k => $v) {
@@ -893,6 +904,7 @@ class Theme extends SbShell {
 		$out = "<div class=\"form-group\">\n";
 		$out.="\t<?php echo \$this->Form->label('$field', $niceName, array('class' => 'col-lg-2 control-label')) ?>\n";
 		$out.="\t<div class=\"col-lg-10" . ((!is_null($field)) ? '' : ' col-lg-offset-2') . "\">\n";
+//		if (!$hiddenInput) {
 		if ($hasAddon) {
 			$out.="\t\t<div class=\"input-group\">\n";
 			if (!empty($config['addBefore'])) {
@@ -912,6 +924,10 @@ class Theme extends SbShell {
 			}
 			$out.="\t\t</div>\n";
 		}
+//		} else {
+//		$out.="\t\t<p class=\"form-control-static\">\n\t<?php echo 'lol';? ></p>\n";
+//		$out.="\t\t<?php echo \$this->Form->hidden('$field');? >\n";
+//		}
 		$out.="\t</div>\n</div>\n";
 
 		if ($fileField) {
