@@ -117,6 +117,8 @@ plugins:
           icon: list-ul
           fieldNames:
             user_id: Author
+        model:
+          displayField: name
         controller:
           actions:
             public:

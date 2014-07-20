@@ -170,6 +170,11 @@ plugins:
                       website
                       realname
         options:
+          ## Field names. Field names from other plugins are used here too as they
+          ## are visible in some views.
+          fieldNames:
+            PostCategory: Category
+            post_category_id: Category
           icon: user
           ## Options are part-wide, as needed by models/controllers and views
           ## Name of the pass field in DB and forms

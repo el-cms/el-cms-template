@@ -225,7 +225,7 @@ if ($noToolbar === false) {
  * List
  */
 echo "<?php\nforeach (\${$pluralVar} as \${$singularVar}):\n";
-if (!$this->s_haveSFW()):
+if ($this->s_haveSFW()):
 	echo "\t// Verifying SFW state\n";
 	echo "\tif(\${$singularVar}['$modelClass']['$sfwField'] == 0 && \$seeNSFW == false):?>\n";
 	?>
@@ -243,8 +243,9 @@ echo "?>";
 	<?php
 	// Everything on one line
 	if ($listIsCompact == true):
-		// sfw
-		echo $sfwContent['displayString'];
+		if(!is_null($sfwField)):
+			echo $sfwContent['displayString'];
+		endif;
 		echo $titleContent['displayString'];
 		echo "<?php echo " . $this->iString('in') . ";?> " . $catContent;
 		echo $cDateContent;
@@ -257,7 +258,8 @@ echo "?>";
 	else:
 		// Header
 		echo "<div class=\"article-list-header\">\n";
-		echo "<h2 class=\"inline\">{$sfwContent['displayString']} {$titleContent['displayString']}</h2>";
+		//echo "<h2 class=\"inline\">{$sfwContent['displayString']} {$titleContent['displayString']}</h2>";
+		echo "<h2 class=\"inline\">{$titleContent['displayString']}</h2>";
 		echo "<span class=\"header-content\"><?php echo " . $this->iString('in') . ";?> $catContent</span>";
 
 		// Actions
@@ -268,11 +270,16 @@ echo "?>";
 		echo "\t</div>\n\n";
 
 		echo "\t<div class=\"article-list-content\">\n";
-		echo $contentContent['displayString'];
+		echo $contentContent['displayString-noCheck'];
+//		echo $contentContent['displayString'];
 		echo "\t</div>\n\n";
 
 		echo "\t<div class=\"article-list-footer\">\n";
+		if(!is_null($sfwField)):
+			echo '<?php echo '. $this->iString('SFW').';?> '. $sfwContent['displayString'].' - ';
+		endif;
 		echo implode("\n&nbsp;-&nbsp;", array_filter(array(
+				$sfw,
 				$authorContent,
 				$cDateContent,
 				$mDateContent,
@@ -284,7 +291,7 @@ echo "?>";
 </div>
 <?php
 echo "<?php";
-if (!$this->s_haveSFW()):
+if ($this->s_haveSFW()):
 	echo "\nendif;\n";
 endif;
 echo "\nendforeach;?>\n";

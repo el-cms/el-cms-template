@@ -300,7 +300,6 @@ class Theme extends SbShell {
 	 */
 	public function s_haveSFW($schema = null) {
 		if ($this->Sbc->getConfig('theme.sfw.useSFW')) {
-
 			//Schema given: field list
 			if (!is_null($schema)) {
 				return in_array($this->Sbc->getConfig('theme.sfw.field'), $schema);
@@ -532,6 +531,8 @@ class Theme extends SbShell {
 		$fieldString = "\${$this->templateVars['singularVar']}['{$this->templateVars['modelClass']}']['{$field}']";
 		// Field to display on views
 		$displayString = "echo $fieldString;";
+		// Field to display, with no checks on it:
+		$displayStringNoCheck = "echo $fieldString;";
 
 		//
 		// Field type
@@ -559,6 +560,7 @@ class Theme extends SbShell {
 				// Language field ?
 				if (!empty($config['subType']) && $config['subType'] == 'language') {
 					$displayString = $this->v_displayString_Language($field, $config);
+					$displayStringNoCheck = $displayString;
 				}
 
 				// SFW field ?
@@ -577,6 +579,7 @@ class Theme extends SbShell {
 					$displayString = "<?php echo \$this->Html->link($fieldString, {$options['url']})?>";
 				} else {
 					$displayString = "<?php\n$displayString\n?>";
+					$displayStringNoCheck = "<?php\n$displayStringNoCheck\n?>";
 				}
 				break;
 
@@ -601,6 +604,7 @@ class Theme extends SbShell {
 		// Adding new config to original one
 		$config['tdClass'] = (!is_null($tdClass)) ? " class=\"$tdClass\"" : '';
 		$config['displayString'] = $displayString;
+		$config['displayString-noCheck'] = $displayStringNoCheck;
 
 		return $config;
 	}
@@ -637,8 +641,16 @@ class Theme extends SbShell {
 		// Foreign key field ?
 		foreach ($assocs as $assoc => $assocConfig) {
 			if ($field == $assocConfig['foreignKey']) {
-				$displayString = "echo \$" . Inflector::variable($model) . "['$assoc']['" . ((is_null($this->otherModels[$assoc]->displayField)) ? $this->otherModels[$assoc]->primaryKey : $this->otherModels[$assoc]->displayField) . "'];";
-				$this->speak("$field is a FK for '$assoc' !");
+				// Creating the link
+				$fieldContent = "\$" . Inflector::variable($model) . "['$assoc']['" . ((is_null($this->otherModels[$assoc]->displayField)) ? $this->otherModels[$assoc]->primaryKey : $this->otherModels[$assoc]->displayField) . "']";
+				$fieldId = "\$" . Inflector::variable($model) . "['$assoc']['" . $this->otherModels[$assoc]->primaryKey . "']";
+				$controller = inflector::tableize($assoc);
+				if ($this->canDo('view', null, $controller)) {
+					$displayString = "echo \$this->Html->link($fieldContent, " . $this->url('view', $controller, null, "$fieldId") . ");";
+				} else {
+					$displayString = "echo $fieldContent";
+				}
+				$this->speak(__d('Sb', "$field is a FK for '$assoc'"), 'comment');
 			}
 		}
 		// Configuration data is poor, so we can't check data type.

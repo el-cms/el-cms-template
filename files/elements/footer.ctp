@@ -51,7 +51,7 @@ if ($useLang):
 endif;
 ?>&nbsp;
 <!--/nocache-->
-&copy; 2013 - <?php echo $this->Sbc->getConfig('general.editorWebsiteName') ?> /
+&copy; <?php echo date('Y');?> - <?php echo $this->Sbc->getConfig('general.siteName') ?> /
 <?php
 if ($useAuth):
 	//Getting vars
