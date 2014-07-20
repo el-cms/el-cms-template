@@ -354,6 +354,7 @@ plugins:
         options:
 					## If false, lib/Cake/Config/routes.php will not be included at the end of generated file.
           ## Use this setting to create your own routing system.
+          ## Note: don't define routes with language support, the template handles it.
           useCakeSystem: true
           routes:
             ## Home route
@@ -369,7 +370,8 @@ plugins:
                 home
               ## List of named params
               named: []
-
+              regexps: []
+            ##
             ## Default pages system from cake:
             /pages/*:
               plugin:
@@ -377,7 +379,14 @@ plugins:
               action: display
               params: []
               named: []
+              regexps: []
 
+            ## /plugin/controller/action
+            /:prefix/:plugin/:controller/:action/*:
+            /:plugin/:controller/:action/*:
+            ## /controller/action
+            /:prefix/:controller/:action/*:
+            /:controller/:action/*:
 
       ##
       ## AppHelper

@@ -34,7 +34,7 @@ App::uses('Helper', 'View');
 class AppHelper extends Helper {
 
 	<?php
-	if($this->Sbc->getConfig('theme.languages.useLanguages')===true):
+	if($this->Sbc->getConfig('theme.language.useLanguages')===true):
 	?>
 
 	/**
