@@ -86,6 +86,7 @@ theme:
       loginAction: login
     Session:
     Acl:
+      useComponent: false;
 
   ## Default template have custom flash message elements. If you set this value to true,
   ## flash messages will need them.
