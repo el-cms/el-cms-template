@@ -302,6 +302,8 @@ defaults:
     ## An array of options
     options:
       icon: puzzle-piece
+    ## Virtual models
+    virtualModels: []
 
   ##
   ## Default configuration for a file

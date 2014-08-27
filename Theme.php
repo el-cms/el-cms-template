@@ -45,7 +45,12 @@ class Theme extends SbShell {
 	 * @var string
 	 */
 	public $templatePath = null;
-	// Other models
+
+	/**
+	 * List of loaded model objects used during generation
+	 *
+	 * @var array
+	 */
 	public $otherModels = array();
 
 	/* ---------------------------------------------------------------------------
@@ -88,17 +93,25 @@ class Theme extends SbShell {
 	 * @param string $plugin Plugin name. If null, plugin will be determinated by the model.
 	 */
 	public function s_loadModel($model, $plugin = null) {
-		if (!in_array($model, $this->otherModels)) {
+		// Search for real model name
+		$realModelName=$this->Sbc->getRealModelModel($model);
+		if(!$realModelName){
+			$realModelName=$model;
+		}else{
+			$this->speak(__d('sb', "$model is a virtual model for $realModelName."), 'comment');
+		}
+		if (!in_array($realModelName, $this->otherModels)) {
 			if (is_null($plugin)) {
-				$plugin = $this->Sbc->getPluginName($this->Sbc->getModelPlugin($model));
+				$this->Sbc->getModelPlugin($realModelName);
 			}
-			App::uses($model, $plugin . '.Model');
+			$plugin = $this->Sbc->getPluginName($plugin);
+			App::uses($realModelName, $plugin . '.Model');
 			// Checks if Model has been loaded correctly
-			if (!class_exists($model)) {
-				$this->speak(__d('superBake', "Generate {$plugin}$model model first"), 'error', 0);
+			if (!class_exists($realModelName)) {
+				$this->speak(__d('superBake', "Generate {$plugin}$realModelName model first (or add a virtual model in your plugin.virtualModels"), 'error', 0);
 				$this->_stop();
 			}
-			$this->otherModels[$model] = ClassRegistry::init($model);
+			$this->otherModels[$realModelName] = ClassRegistry::init($realModelName);
 		}
 	}
 
